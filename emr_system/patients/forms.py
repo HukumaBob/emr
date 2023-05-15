@@ -6,5 +6,5 @@ class PatientForm(forms.ModelForm):
         model = Patient
         fields = '__all__'
         widgets = {
-            'date_of_birth': forms.DateInput(format='%Y-%m-%d', attrs={'placeholder': 'YYYY.MM.DD'}),
+            'date_of_birth': forms.DateInput(format='%Y-%m-%d', attrs={'placeholder': 'YYYY-MM-DD'}),
         }
