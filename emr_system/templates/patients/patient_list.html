@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Patients List</title>
+</head>
+<body>
+    <h1>Patients List</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Date of Birth</th>
+                <th>Gender</th>
+                <th>Address</th>
+                <th>Phone Number</th>
+                <th>Email</th>
+                <th>Created At</th>
+                <th>Updated At</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for patient in patients %}
+                <tr>
+                    <td>{{ patient.first_name }}</td>
+                    <td>{{ patient.last_name }}</td>
+                    <td>{{ patient.date_of_birth }}</td>
+                    <td>{{ patient.get_gender_display }}</td>
+                    <td>{{ patient.address }}</td>
+                    <td>{{ patient.phone_number }}</td>
+                    <td>{{ patient.email }}</td>
+                    <td>{{ patient.created_at }}</td>
+                    <td>{{ patient.updated_at }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
