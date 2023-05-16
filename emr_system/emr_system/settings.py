@@ -6,10 +6,8 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-gn=(=zc(o6=5#r$p26205%y=7lk-$r*o-v0wemv*-x^1gsru@z'
 
-# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = []
@@ -25,6 +23,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'patients.apps.PatientsConfig',
+    'users.apps.UsersConfig',
+    'organization.apps.OrganizationConfig',
 ]
 
 MIDDLEWARE = [
