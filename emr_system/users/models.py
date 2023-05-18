@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from organization.models import Department
 
 
 class Profile(models.Model):
@@ -28,7 +29,7 @@ class Profile(models.Model):
     bio = models.TextField(max_length=500, blank=True)
     medical_field = models.CharField(max_length=100, blank=True)
     position = models.CharField(max_length=100, blank=True)
-    department = models.CharField(max_length=100)
+    departments = models.ManyToManyField(Department)
     birth_date = models.DateField(null=True, blank=True)
 
     @property
@@ -54,3 +55,6 @@ class Profile(models.Model):
     @property
     def is_manager(self):
         return self.role == self.ROLE_MANAGER
+
+    def __str__(self):
+        return f'{self.role}: {self.user}'
