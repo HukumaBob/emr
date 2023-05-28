@@ -15,8 +15,17 @@
         <input type="date" class="form-control" id="date_of_birth" v-model="date_of_birth" required>
       </div>
       <div class="mb-3">
-        <label for="email" class="form-label">email</label>
+        <label for="email" class="form-label">Email</label>
         <input type="tel" class="form-control" id="email" v-model="email" required>
+      </div>
+      <div class="mb-3">
+        <label for="gender" class="form-label">Gender</label>
+        <select class="form-select" id="gender" v-model="gender" required>
+          <option value="">Select gender</option>
+          <option value="M">Male</option>
+          <option value="F">Female</option>
+          <option value="O">Other</option>
+        </select>
       </div>
       <button type="submit" class="btn btn-primary">Submit</button>
     </form>
@@ -24,24 +33,53 @@
 </template>
 
 <script>
+import PatientService from '@/api/PatientService';
+
 export default {
   data() {
-    return {   
-          first_name: '',
-          last_name: '',
-          date_of_birth: '',
-          email: ''
+    return {
+      // Your form data properties
+      first_name: '',
+      last_name: '',
+      date_of_birth: '',
+      email: '',
+      gender: '' // Added gender property
     };
   },
   methods: {
-    submitForm() {
-      // Perform form submission logic, e.g., calling API to register the patient
-      // You can access the form data using this.firstName, this.lastName, etc.
+    async submitForm() {
+      // Create a patient object with the form data
+      const patientData = {
+        first_name: this.first_name,
+        last_name: this.last_name,
+        date_of_birth: this.date_of_birth,
+        email: this.email,
+        gender: this.gender // Include gender in patientData
+      };
+      console.log(patientData); // Log the form data
+      try {
+        // Call the createPatient method of the PatientService
+        const createdPatient = await PatientService.createPatient(patientData);
+        console.log('Patient created:', createdPatient);
+        // Reset the form data after successful creation
+        this.resetForm();
+      } catch (error) {
+        console.error('Error creating patient:', error);
+        // Handle the error if necessary
+      }
+    },
+    resetForm() {
+      // Reset the form data
+      this.first_name = '';
+      this.last_name = '';
+      this.date_of_birth = '';
+      this.email = '';
+      this.gender = ''; // Reset the gender field
     }
   }
 };
 </script>
 
 <style>
-/* Add custom styles if needed */
+/* Your component styles */
 </style>

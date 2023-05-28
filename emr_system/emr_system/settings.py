@@ -30,11 +30,17 @@ INSTALLED_APPS = [
     'organization.apps.OrganizationConfig',
 ]
 
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:8081',
+    'http://192.168.2.219:8081,'
+    # Другие разрешенные источники
+]
+
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',    
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -122,4 +128,4 @@ REST_FRAMEWORK = {
     ]
 }
 
-CORS_ALLOW_ALL_ORIGINS = True
+
