@@ -3,8 +3,10 @@ from django.db import models
 
 class Department(models.Model):
     department = models.CharField(max_length=50, blank=False)
+
     def __str__(self):
         return f'Department: {self.department}'
+
 
 class Organization(models.Model):
     long_name = models.CharField(max_length=250)

@@ -7,6 +7,7 @@ from .models import Organization, Department
 class DepartmentAdmin(admin.ModelAdmin):
     list_display = ['department']
 
+
 @admin.register(Organization)
 class OrganizationAdmin(admin.ModelAdmin):
     list_display = [
@@ -16,5 +17,3 @@ class OrganizationAdmin(admin.ModelAdmin):
         'phone_number',
         'email',
     ]
-
-

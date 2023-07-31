@@ -5,6 +5,11 @@ from .models import Patient
 
 @admin.register(Patient)
 class PatientAdmin(admin.ModelAdmin):
-    list_display = ['first_name', 'middle_name']
+    list_display = [
+        'first_name',
+        'middle_name',
+        'last_name',
+        'date_of_birth',
+    ]
 
 
