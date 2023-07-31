@@ -70,6 +70,6 @@ Open your web browser and visit `http://localhost:3000/` to access the EMR syste
  
 ## Conclusion
 
-The Electronic Medical Record system developed on Django and React JS provides a comprehensive solution for managing patient medical records efficiently. It combines the power of Django's backend capabilities with Vue.js's interactive frontend to create a user-friendly and feature-rich application. By adopting this EMR system, healthcare professionals can enhance their workflow, improve patient care, and streamline medical record management.
+The Electronic Medical Record system developed on Django and React JS provides a comprehensive solution for managing patient medical records efficiently. It combines the power of Django's backend capabilities with React JS's interactive frontend to create a user-friendly and feature-rich application. By adopting this EMR system, healthcare professionals can enhance their workflow, improve patient care, and streamline medical record management.
 # emr
 Electronic medical record system
