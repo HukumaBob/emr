@@ -1,3 +1,13 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models import Record
+
+
+@admin.register(Record)
+class PatientAdmin(admin.ModelAdmin):
+    list_display = [
+        'patient',
+        'procedure_date',
+        'diagnosis',
+        'recommendations',
+    ]

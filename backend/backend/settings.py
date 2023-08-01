@@ -28,6 +28,7 @@ INSTALLED_APPS = [
 
     'users',
     'patients',
+    'records',
     'organization',
 ]
 
