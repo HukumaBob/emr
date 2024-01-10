@@ -1,0 +1,4 @@
+.inverted-icon {
+  filter: invert(1);
+  cursor: pointer;
+}

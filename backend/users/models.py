@@ -38,15 +38,15 @@ class Profile(models.Model):
     bio = models.TextField(max_length=500, blank=True)
     medical_field = models.OneToOneField(
         MedicalField,
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,  blank=True, null=True
     )
     position = models.OneToOneField(
         Position,
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL, blank=True, null=True
     )
     departments = models.OneToOneField(
         Department,
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL, null=True, blank=True
     )
     birth_date = models.DateField(null=True, blank=True)
 
