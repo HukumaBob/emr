@@ -6,12 +6,15 @@ from organization.models import Department
 class Position(models.Model):
     """ F.e. Head of Department. """
     name = models.CharField(max_length=100)
+
     def __str__(self):
         return f'{self.name}'
+
 
 class MedicalField(models.Model):
     """ F.e. gastroenterologist. """
     name = models.CharField(max_length=100)
+
     def __str__(self):
         return f'{self.name}'
 
@@ -21,12 +24,13 @@ class Profile(models.Model):
         ROLE_USER = 'US', 'user'
         ROLE_DOCTOR = 'DC', 'doctor'
         ROLE_NURSE = 'NS', 'nurse'
-        ROLE_MANAGER = 'MN', 'manager'
+        ROLE_COORDINATOR = 'CO', 'coordinator'
         ROLE_ADMIN = 'AD', 'admin'
 
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
+        related_name='user',
     )
     role = models.CharField(
         max_length=20,
@@ -67,8 +71,8 @@ class Profile(models.Model):
         return self.role == self.Role.ROLE_NURSE
 
     @property
-    def is_manager(self):
-        return self.role == self.Role.ROLE_MANAGER
+    def is_coordinator(self):
+        return self.role == self.Role.ROLE_COORDINATOR
 
     def __str__(self):
         return f'{self.role}: {self.user}'

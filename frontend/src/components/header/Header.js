@@ -3,12 +3,11 @@ import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
-import Button from "react-bootstrap/esm/Button";
 import Modal from "react-bootstrap/Modal";
-import Login from "../login/Login";
+import LoginForm from "../login/LoginForm";
 import "./Header.css";
 
-function Header() {
+function Header({ isAuthenticated, logout }) {
   const [show, setShow] = useState(false);
 
   const handleClose = () => setShow(false);
@@ -21,9 +20,10 @@ function Header() {
             <img
               src="../images/logo.svg"
               width="30"
-              height="30"
+              height="40"
               className="d-inline-block align-top"
               alt="Endosoft logo"
+              href="https://hukumabob.github.io/"
             />
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
@@ -46,14 +46,26 @@ function Header() {
               </NavDropdown>
             </Nav>
           </Navbar.Collapse>
-          <img
-            src="../../images/login.svg"
-            width="30"
-            height="30"
-            className="d-inline-block align-top  inverted-icon"
-            alt="login"
-            onClick={handleShow}
-          />
+
+          {isAuthenticated ? (
+            <img
+              src="../../images/logout.svg"
+              width="30"
+              height="30"
+              className="d-inline-block align-top  inverted-icon"
+              alt="logout"
+              onClick={handleShow}
+            />
+          ) : (
+            <img
+              src="../../images/login.svg"
+              width="30"
+              height="30"
+              className="d-inline-block align-top  inverted-icon"
+              alt="login"
+              onClick={handleShow}
+            />
+          )}
         </Container>
       </Navbar>
       <Modal show={show} onHide={handleClose}>
@@ -62,7 +74,7 @@ function Header() {
         </Modal.Header>
 
         <Modal.Body className="bg-secondary">
-          <Login />
+          <LoginForm />
         </Modal.Body>
       </Modal>
     </>

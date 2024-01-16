@@ -5,7 +5,10 @@ from .models import Organization, Department
 
 @admin.register(Department)
 class DepartmentAdmin(admin.ModelAdmin):
-    list_display = ['department']
+    list_display = [
+        'department',
+        'organization',
+        ]
 
 
 @admin.register(Organization)
