@@ -7,12 +7,12 @@ import { useState } from "react";
 import { connect } from "react-redux";
 import { login } from "../../actions";
 
-const LoginForm = ({ login }) => {
+const LoginForm = ({ login, onLoginSuccess }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const handleLogin = (e) => {
     e.preventDefault();
-    login(username, password);
+    login(username, password, onLoginSuccess);
     // Дополнительная логика, если необходимо
   };
   return (
@@ -24,7 +24,7 @@ const LoginForm = ({ login }) => {
         <Col sm="10">
           <Form.Control
             type="text"
-            // autoComplete={login}
+            autoComplete="login"
             onChange={(e) => setUsername(e.target.value)}
           />
         </Col>
@@ -38,7 +38,7 @@ const LoginForm = ({ login }) => {
           <Form.Control
             type="password"
             placeholder="Password"
-            // autoComplete={password}
+            autoComplete="password"
             onChange={(e) => setPassword(e.target.value)}
           />
         </Col>
