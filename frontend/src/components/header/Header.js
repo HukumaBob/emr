@@ -8,10 +8,10 @@ import { Outlet } from "react-router-dom";
 import LoginForm from "../login/LoginForm";
 import "./Header.css";
 import { connect } from "react-redux";
-import { logout } from "../../actions";
+import { logout } from "../../slices/AuthSlice";
 
 function Header({ isAuthenticated, logout }) {
-  console.log("isAuthenticated: ", isAuthenticated);
+  console.log(isAuthenticated);
   const [showLogin, setShowLogin] = useState(false);
 
   const handleCloseLogin = () => setShowLogin(false);
@@ -24,8 +24,8 @@ function Header({ isAuthenticated, logout }) {
 
   return (
     <>
-      <Navbar data-bs-theme="dark" expand="lg" className="bg-body-tertiary">
-        <Container>
+      <Navbar expand="lg" className="bg-body-tertiary">
+        <Container fluid>
           <Navbar.Brand href="https://hukumabob.github.io/">
             <img
               src="../images/logo.svg"
@@ -92,7 +92,9 @@ function Header({ isAuthenticated, logout }) {
 }
 
 const mapStateToProps = (state) => ({
-  isAuthenticated: state.authReducer.isAuthenticated,
+  isAuthenticated: state.auth.isAuthenticated
+    ? state.auth.isAuthenticated
+    : false,
 });
 const mapDispatchToProps = (dispatch) => ({
   logout: () => dispatch(logout()),

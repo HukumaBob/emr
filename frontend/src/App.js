@@ -10,10 +10,11 @@ import TodaySchedule from "./components/appointmens/TodaySchedule";
 // import WholeTimeSchedule from './WholeTimeSchedule';
 import ProtectedRoute from "./components/routers/ProtectedRoute";
 import { ToastContainer } from "react-toastify";
+import Container from "react-bootstrap/esm/Container";
 
 const App = ({ isAuthenticated }) => {
   return (
-    <>
+    <Container fluid className="p-0" data-bs-theme="dark">
       <ToastContainer />
       <BrowserRouter>
         <Header />
@@ -48,12 +49,14 @@ const App = ({ isAuthenticated }) => {
           />
         </Routes>
       </BrowserRouter>
-    </>
+    </Container>
   );
 };
 
 const mapStateToProps = (state) => ({
-  isAuthenticated: state.authReducer.isAuthenticated,
+  isAuthenticated: state.auth.isAuthenticated
+    ? state.auth.isAuthenticated
+    : false,
 });
 
 export default connect(mapStateToProps)(App);

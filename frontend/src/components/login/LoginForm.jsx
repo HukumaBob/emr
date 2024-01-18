@@ -5,18 +5,21 @@ import Row from "react-bootstrap/Row";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useState } from "react";
 import { connect } from "react-redux";
-import { login } from "../../actions";
+import { login } from "../../slices/AuthSlice";
 
 const LoginForm = ({ login, onLoginSuccess }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const handleLogin = (e) => {
     e.preventDefault();
-    login(username, password, onLoginSuccess);
-    // Дополнительная логика, если необходимо
+    if (username && password) {
+      login({ username, password, onLoginSuccess });
+    } else {
+      console.error("Username and password are required");
+    }
   };
   return (
-    <Form data-bs-theme="dark" onSubmit={handleLogin}>
+    <Form onSubmit={handleLogin}>
       <Form.Group as={Row} className="mb-3" controlId="formPlaintextEmail">
         <Form.Label column sm="2">
           Username
@@ -44,7 +47,7 @@ const LoginForm = ({ login, onLoginSuccess }) => {
         </Col>
       </Form.Group>
 
-      <Form.Group as={Row} className="mt-3" controlId="submitLoginButton">
+      <Form.Group as={Row} className="mb-3" controlId="submitLoginButton">
         <Button variant="primary" type="submit">
           Submit
         </Button>

@@ -1,94 +1,66 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-import createBookWithId from "../../utils/createBookWithId";
-import { setError } from "./errorSlice";
-const initialState = {
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-const initialState = {
-    isAuthenticated: localStorage.getItem("token") ? true : false,
-    token: localStorage.getItem("token") || null,
-  };
-export const fetchBook = createAsyncThunk(
-  "books/fetchBook",
-  async (url, thunkAPI) => {
+// Создаем асинхронные действия
+export const login = createAsyncThunk(
+  "auth/login",
+  async ({ username, password }, { rejectWithValue }) => {
     try {
-      const res = await axios.get(url);
-      return res.data;
+      const response = await axios.post(
+        "http://localhost:8000/api/auth/jwt/create/",
+        {
+          username,
+          password,
+        }
+      );
+      const token = response.data ? response.data.access : null;
+      if (token) {
+        localStorage.setItem("token", token);
+      }
+      return { token };
     } catch (error) {
-      thunkAPI.dispatch(setError(error.message));
-      return thunkAPI.rejectWithValue(error);
+      toast.warning(`Login failed: ${error.response.data.detail}`, {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      return rejectWithValue(error.message);
     }
   }
 );
-const booksSlice = createSlice({
-  name: "token",
-  initialState,
-  reducers: {
-    addBook: (state, action) => {
-      state.token.push(action.payload);
-    },
-    deleteBook: (state, action) => {
-      // const index = state.findIndex((book) => book.id === action.payload);
-      // if (index !== -1) {
-      //   state.splice(index, 1);
-      // }
-      // Или такой вариант
-      return {
-        ...state,
-        books: state.books.filter((book) => action.payload !== book.id),
-      };
-    },
-    toggleFavorite: (state, action) => {
-      state.token.forEach((token) => {
-        if (book.id === action.payload) {
-          book.isFavorite = !book.isFavorite;
-        }
-      });
-      // Или такой вариант
-      // return state.map((book) =>
-      //   book.id === action.payload
-      //     ? {
-      //         ...book,
-      //         isFavorite: !book.isFavorite,
-      //       }
-      //     : book
-      // );
-    },
+
+export const logout = createAsyncThunk("auth/logout", () => {
+  localStorage.removeItem("token");
+  return {};
+});
+
+// Создаем slice
+const authSlice = createSlice({
+  name: "auth",
+  initialState: {
+    isAuthenticated: localStorage.getItem("token") ? true : false,
+    token: localStorage.getItem("token") || null,
   },
-  // Это не работает!
-  // extraReducers: {
-  //   [fetchBook.fulfilled]: (state, action) => {
-  //     if (action.payload.author && action.payload.title) {
-  //       state.push(createBookWithId(action.payload, "API"));
-  //     }
-  //   },
-  // },
+  reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(fetchBook.fulfilled, (state, action) => {
+    builder.addCase(login.fulfilled, (state, action) => {
+      state.isAuthenticated = true;
+      state.token = action.payload.token;
+      action.meta.arg.onLoginSuccess();
+    });
+    builder.addCase(logout.fulfilled, (state) => {
       state.isAuthenticated = false;
-      if (action.payload.author && action.payload.title) {
-        state.token.push(createBookWithId(action.payload, "API"));
-      }
-    });
-    builder.addCase(fetchBook.pending, (state) => {
-      state.isAuthenticated = true;
-    });
-    builder.addCase(fetchBook.rejected, (state) => {
-      state.isAuthenticated = true;
+      state.token = null;
     });
   },
 });
-export const { addBook, deleteBook, toggleFavorite } = booksSlice.actions;
-// export const thunkFunction = async (dispatch, getState) => {
-//   try {
-//     const res = await axios.get("http://localhost:4000/random-book ");
-//     if (res.data && res.data.author && res.data.title) {
-//       dispatch(addBook(createBookWithId(res.data, "API")));
-//     }
-//   } catch (error) {
-//     console.log("Error fetching random book ", error);
-//   }
-// };
-export const selectBooks = (state) => state.books.books;
-export const selectIsAuthenticated = (state) => state.books.isAuthenticated;
-export default booksSlice.reducer;
+
+export const token = (state) => state.auth.token;
+export const isAuthenticated = (state) => state.auth.isAuthenticated;
+export default authSlice.reducer;
