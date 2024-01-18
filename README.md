@@ -31,14 +31,24 @@ git clone git@github.com:HukumaBob/emr.git
 
 2. Install dependencies:
 
-```bash
 # Backend dependencies
+
+```bash
+
 cd backend
 pip install -r requirements.txt
 
+```
+
 # Frontend dependencies
-cd ../client
+
+(in new terminal)
+
+```bash
+
+cd frontend
 npm install
+
 ```
 
 3. Database Setup:
@@ -55,21 +65,26 @@ python manage.py migrate
 
 5. Start the Development Servers:
 
-```bash
 # Backend server (runs on http://localhost:8000/)
+
+```bash
+cd backend
 python manage.py runserver
+```
 
 # Frontend server (runs on http://localhost:3000/)
-cd ../frontend
-npm run serve
+
+```bash
+
+cd frontend
+npm start
+
 ```
 
 6. Access the EMR system:
 
 Open your web browser and visit `http://localhost:3000/` to access the EMR system.
- 
+
 ## Conclusion
 
 The Electronic Medical Record system developed on Django and React JS provides a comprehensive solution for managing patient medical records efficiently. It combines the power of Django's backend capabilities with React JS's interactive frontend to create a user-friendly and feature-rich application. By adopting this EMR system, healthcare professionals can enhance their workflow, improve patient care, and streamline medical record management.
-# emr
-Electronic medical record system
