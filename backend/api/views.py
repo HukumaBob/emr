@@ -4,7 +4,7 @@ from rest_framework.permissions import (
 )
 from django.contrib.auth.models import User
 from users.models import Profile
-from .serializer import ProfileSerializer
+from .serializers import ProfileSerializer
 
 
 class ProfileViewSet(viewsets.ModelViewSet):

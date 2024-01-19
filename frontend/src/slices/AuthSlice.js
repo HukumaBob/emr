@@ -2,19 +2,17 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { BASE_URL, LOGIN_ENDPOINT } from "../api/apiConfig";
 
 // Создаем асинхронные действия
 export const login = createAsyncThunk(
   "auth/login",
   async ({ username, password }, { rejectWithValue }) => {
     try {
-      const response = await axios.post(
-        "http://localhost:8000/api/auth/jwt/create/",
-        {
-          username,
-          password,
-        }
-      );
+      const response = await axios.post(`${BASE_URL}${LOGIN_ENDPOINT}`, {
+        username,
+        password,
+      });
       const token = response.data ? response.data.access : null;
       if (token) {
         localStorage.setItem("token", token);

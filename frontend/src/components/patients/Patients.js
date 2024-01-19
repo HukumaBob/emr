@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import Table from "react-bootstrap/Table";
-import Container from "react-bootstrap/Container";
+import { BASE_URL, PATIENTS } from "../../api/apiConfig";
 
 const Patients = () => {
   const [patients, setPatients] = useState([]);
 
   useEffect(() => {
     // Fetch data from your API endpoint
-    fetch("http://localhost:8000/api/patients/")
+    fetch(`${BASE_URL}${PATIENTS}`)
       .then((response) => response.json())
       .then((data) => setPatients(data))
       .catch((error) => console.error("Error fetching data:", error));
@@ -18,10 +18,8 @@ const Patients = () => {
       <thead>
         <tr>
           <th>#</th>
-          <th>First Name</th>
-          <th>Middle Name</th>
-          <th>Last Name</th>
-          <th>Date of Birth</th>
+          <th>Patient`s name</th>
+          <th>DoB</th>
           <th>Gender</th>
           <th>Address</th>
           <th>Phone Number</th>
@@ -32,13 +30,13 @@ const Patients = () => {
       </thead>
       <tbody>
         {patients.map((patient, index) => (
-          <tr key={index}>
+          <tr key={patient.id}>
             <td>{index + 1}</td>
-            <td>{patient.first_name}</td>
-            <td>{patient.middle_name}</td>
-            <td>{patient.last_name}</td>
+            <td>
+              {patient.first_name} {patient.middle_name} {patient.last_name}
+            </td>
             <td>{patient.date_of_birth}</td>
-            <td>{patient.gender}</td>
+            <td>{patient.sex}</td>
             <td>{patient.address}</td>
             <td>{patient.phone_number}</td>
             <td>{patient.email}</td>

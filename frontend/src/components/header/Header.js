@@ -24,7 +24,7 @@ function Header({ isAuthenticated, logout }) {
 
   return (
     <>
-      <Navbar expand="lg" className="bg-body-tertiary">
+      <Navbar expand="lg" className="bg-body-tertiary my-1 mx-1">
         <Container fluid>
           <Navbar.Brand href="https://hukumabob.github.io/">
             <img

@@ -2,19 +2,18 @@ from django.db import models
 
 
 class Patient(models.Model):
-    class Gender(models.TextChoices):
+    class Sex(models.TextChoices):
         MALE = 'M', 'male'
-        FEMALE = 'F', 'female'
-        OTHER = 'O', 'other'
+        FEMALE = 'F', 'female'        
 
     first_name = models.CharField(max_length=100, blank=True, null=True, )
     middle_name = models.CharField(max_length=100, blank=True, null=True, )
     last_name = models.CharField(max_length=100)
     date_of_birth = models.DateField()
-    gender = models.CharField(
+    sex = models.CharField(
         max_length=1,
-        choices=Gender.choices,
-        default=Gender.FEMALE
+        choices=Sex.choices,
+        default=Sex.FEMALE
     )
     address = models.CharField(max_length=200, blank=True, null=True, )
     phone_number = models.CharField(max_length=20, blank=True, null=True, )

@@ -1,27 +1,52 @@
-// src/components/UserList.js
-import React, { useEffect } from "react";
-import { connect } from "react-redux";
-import { fetchUsers } from "../actions";
+import React, { useState, useEffect } from "react";
+import Table from "react-bootstrap/Table";
+import { BASE_URL, USERS } from "../../api/apiConfig";
 
-const UserList = ({ users, fetchUsers }) => {
+const Users = () => {
+  const [patients, setPatients] = useState([]);
+
   useEffect(() => {
-    fetchUsers();
-  }, [fetchUsers]);
+    // Fetch data from your API endpoint
+    fetch(`${BASE_URL}${USERS}`)
+      .then((response) => response.json())
+      .then((data) => setPatients(data))
+      .catch((error) => console.error("Error fetching data:", error));
+  }, []);
 
   return (
-    <div>
-      <h2>User List</h2>
-      <ul>
-        {users.map((user) => (
-          <li key={user.id}>{user.username}</li>
+    <Table striped bordered hover>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>User name</th>
+          <th>DoB</th>
+          <th>Gender</th>
+          <th>Address</th>
+          <th>Phone Number</th>
+          <th>Email</th>
+          <th>Created At</th>
+          <th>Updated At</th>
+        </tr>
+      </thead>
+      <tbody>
+        {patients.map((patient, index) => (
+          <tr key={patient.id}>
+            <td>{index + 1}</td>
+            <td>
+              {patient.first_name} {patient.middle_name} {patient.last_name}
+            </td>
+            <td>{patient.date_of_birth}</td>
+            <td>{patient.sex}</td>
+            <td>{patient.address}</td>
+            <td>{patient.phone_number}</td>
+            <td>{patient.email}</td>
+            <td>{patient.created_at}</td>
+            <td>{patient.updated_at}</td>
+          </tr>
         ))}
-      </ul>
-    </div>
+      </tbody>
+    </Table>
   );
 };
 
-const mapStateToProps = (state) => ({
-  users: state.userReducer.users,
-});
-
-export default connect(mapStateToProps, { fetchUsers })(UserList);
+export default Users;
