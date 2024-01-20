@@ -1,17 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import Table from "react-bootstrap/Table";
-import { BASE_URL, PATIENTS } from "../../api/apiConfig";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchPatients } from "../../slices/PatientsSlice";
 
 const Patients = () => {
-  const [patients, setPatients] = useState([]);
+  const dispatch = useDispatch();
+  const patients = useSelector((state) => state.patients);
 
   useEffect(() => {
-    // Fetch data from your API endpoint
-    fetch(`${BASE_URL}${PATIENTS}`)
-      .then((response) => response.json())
-      .then((data) => setPatients(data))
-      .catch((error) => console.error("Error fetching data:", error));
-  }, []);
+    dispatch(fetchPatients());
+  }, [dispatch]);
 
   return (
     <Table striped bordered hover>
@@ -20,7 +18,7 @@ const Patients = () => {
           <th>#</th>
           <th>Patient`s name</th>
           <th>DoB</th>
-          <th>Gender</th>
+          <th>Sex</th>
           <th>Address</th>
           <th>Phone Number</th>
           <th>Email</th>

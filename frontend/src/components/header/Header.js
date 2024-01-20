@@ -7,18 +7,19 @@ import Modal from "react-bootstrap/Modal";
 import { Outlet } from "react-router-dom";
 import LoginForm from "../login/LoginForm";
 import "./Header.css";
-import { connect } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../../slices/AuthSlice";
 
-function Header({ isAuthenticated, logout }) {
-  console.log(isAuthenticated);
+function Header() {
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+  const dispatch = useDispatch();
   const [showLogin, setShowLogin] = useState(false);
 
   const handleCloseLogin = () => setShowLogin(false);
   const handleShowLogin = () => setShowLogin(true);
 
   const handleLogout = () => {
-    logout(); // Вызов действия logout
+    dispatch(logout()); // Вызов действия logout
     setShowLogin(false); // Закрыть модальное окно, если оно открыто
   };
 
@@ -91,13 +92,4 @@ function Header({ isAuthenticated, logout }) {
   );
 }
 
-const mapStateToProps = (state) => ({
-  isAuthenticated: state.auth.isAuthenticated
-    ? state.auth.isAuthenticated
-    : false,
-});
-const mapDispatchToProps = (dispatch) => ({
-  logout: () => dispatch(logout()),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(Header);
+export default Header;

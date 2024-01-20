@@ -4,20 +4,23 @@ import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useState } from "react";
-import { connect } from "react-redux";
+import { useDispatch } from "react-redux";
 import { login } from "../../slices/AuthSlice";
 
-const LoginForm = ({ login, onLoginSuccess }) => {
+const LoginForm = ({ onLoginSuccess }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const dispatch = useDispatch();
+
   const handleLogin = (e) => {
     e.preventDefault();
     if (username && password) {
-      login({ username, password, onLoginSuccess });
+      dispatch(login({ username, password, onLoginSuccess }));
     } else {
       console.error("Username and password are required");
     }
   };
+
   return (
     <Form onSubmit={handleLogin}>
       <Form.Group as={Row} className="mb-3" controlId="formPlaintextEmail">
@@ -56,4 +59,4 @@ const LoginForm = ({ login, onLoginSuccess }) => {
   );
 };
 
-export default connect(null, { login })(LoginForm);
+export default LoginForm;

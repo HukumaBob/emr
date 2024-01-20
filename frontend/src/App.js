@@ -1,6 +1,6 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { connect } from "react-redux";
+import { useSelector } from "react-redux";
 import Header from "./components/header/Header";
 import Dashboard from "./components/dashboard/Dashboard";
 import Patients from "./components/patients/Patients";
@@ -12,7 +12,9 @@ import ProtectedRoute from "./components/routers/ProtectedRoute";
 import { ToastContainer } from "react-toastify";
 import Container from "react-bootstrap/esm/Container";
 
-const App = ({ isAuthenticated }) => {
+const App = () => {
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+
   return (
     <Container fluid className="p-0" data-bs-theme="dark">
       <ToastContainer />
@@ -53,10 +55,4 @@ const App = ({ isAuthenticated }) => {
   );
 };
 
-const mapStateToProps = (state) => ({
-  isAuthenticated: state.auth.isAuthenticated
-    ? state.auth.isAuthenticated
-    : false,
-});
-
-export default connect(mapStateToProps)(App);
+export default App;
