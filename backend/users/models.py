@@ -2,6 +2,12 @@ from django.db import models
 from django.conf import settings
 from organization.models import Department
 
+class Role(models.TextChoices):
+    ROLE_USER = 'US', 'user'
+    ROLE_DOCTOR = 'DC', 'doctor'
+    ROLE_NURSE = 'NS', 'nurse'
+    ROLE_COORDINATOR = 'CO', 'coordinator'
+    ROLE_ADMIN = 'AD', 'admin'
 
 class Position(models.Model):
     """ F.e. Head of Department. """
@@ -14,43 +20,41 @@ class Position(models.Model):
 class MedicalField(models.Model):
     """ F.e. gastroenterologist. """
     name = models.CharField(max_length=100)
+    role = models.CharField(
+        max_length=100,
+        choices=Role.choices,
+        default=Role.ROLE_USER,
+    )
 
     def __str__(self):
         return f'{self.name}'
 
 
 class Profile(models.Model):
-    class Role(models.TextChoices):
-        ROLE_USER = 'US', 'user'
-        ROLE_DOCTOR = 'DC', 'doctor'
-        ROLE_NURSE = 'NS', 'nurse'
-        ROLE_COORDINATOR = 'CO', 'coordinator'
-        ROLE_ADMIN = 'AD', 'admin'
-
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name='user',
     )
     role = models.CharField(
-        max_length=20,
+        max_length=100,
         choices=Role.choices,
         default=Role.ROLE_USER,
     )
     middle_name = models.CharField(max_length=150, blank=True)
     phone_number = models.CharField(max_length=12)
     bio = models.TextField(max_length=500, blank=True)
-    medical_field = models.OneToOneField(
+    medical_field = models.ForeignKey(
         MedicalField,
-        on_delete=models.SET_NULL,  blank=True, null=True
+        on_delete=models.CASCADE,  blank=True, null=True
     )
-    position = models.OneToOneField(
+    position = models.ForeignKey(
         Position,
-        on_delete=models.SET_NULL, blank=True, null=True
+        on_delete=models.CASCADE, blank=True, null=True
     )
-    departments = models.OneToOneField(
+    departments = models.ForeignKey(
         Department,
-        on_delete=models.SET_NULL, null=True, blank=True
+        on_delete=models.CASCADE, null=True, blank=True
     )
     birth_date = models.DateField(null=True, blank=True)
 

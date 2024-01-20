@@ -3,13 +3,13 @@ import Table from "react-bootstrap/Table";
 import { BASE_URL, USERS } from "../../api/apiConfig";
 
 const Users = () => {
-  const [patients, setPatients] = useState([]);
+  const [users, setUsers] = useState([]);
 
   useEffect(() => {
     // Fetch data from your API endpoint
     fetch(`${BASE_URL}${USERS}`)
       .then((response) => response.json())
-      .then((data) => setPatients(data))
+      .then((data) => setUsers(data))
       .catch((error) => console.error("Error fetching data:", error));
   }, []);
 
@@ -29,11 +29,11 @@ const Users = () => {
         </tr>
       </thead>
       <tbody>
-        {patients.map((patient, index) => (
-          <tr key={patient.id}>
+        {users.map((user, index) => (
+          <tr key={user.id}>
             <td>{index + 1}</td>
             <td>
-              {patient.first_name} {patient.middle_name} {patient.last_name}
+              {user.first_name} {user.middle_name} {user.last_name}
             </td>
             <td>{patient.date_of_birth}</td>
             <td>{patient.sex}</td>

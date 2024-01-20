@@ -3,7 +3,7 @@ from rest_framework import routers
 
 from .views import ProfileViewSet
 
-app_name = 'api'
+app_name = 'users'
 
 router_v1 = routers.DefaultRouter()
 
