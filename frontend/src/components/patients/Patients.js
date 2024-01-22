@@ -8,6 +8,7 @@ const Patients = () => {
   const patients = useSelector((state) => state.patients);
 
   useEffect(() => {
+    console.log("Patients component mounted");
     dispatch(fetchPatients());
   }, [dispatch]);
 
@@ -21,9 +22,9 @@ const Patients = () => {
           <th>Sex</th>
           <th>Address</th>
           <th>Phone Number</th>
-          <th>Email</th>
+          {/* <th>Email</th>
           <th>Created At</th>
-          <th>Updated At</th>
+          <th>Updated At</th> */}
         </tr>
       </thead>
       <tbody>
@@ -37,9 +38,9 @@ const Patients = () => {
             <td>{patient.sex}</td>
             <td>{patient.address}</td>
             <td>{patient.phone_number}</td>
-            <td>{patient.email}</td>
+            {/* <td>{patient.email}</td>
             <td>{patient.created_at}</td>
-            <td>{patient.updated_at}</td>
+            <td>{patient.updated_at}</td> */}
           </tr>
         ))}
       </tbody>

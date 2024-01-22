@@ -15,6 +15,7 @@ class Patient(models.Model):
         choices=Sex.choices,
         default=Sex.FEMALE
     )
+    photo = models.ImageField(upload_to='images/patients_profile/')
     address = models.CharField(max_length=200, blank=True, null=True, )
     phone_number = models.CharField(max_length=20, blank=True, null=True, )
     email = models.EmailField(blank=True, null=True, )

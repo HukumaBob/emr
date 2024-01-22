@@ -16,7 +16,7 @@ const App = () => {
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
 
   return (
-    <Container fluid className="p-0" data-bs-theme="dark">
+    <Container bg="dark" fluid className="p-0" data-bs-theme="dark">
       <ToastContainer />
       <BrowserRouter>
         <Header />
@@ -35,7 +35,7 @@ const App = () => {
             path="patients"
             element={
               <ProtectedRoute isAuthenticated={isAuthenticated}>
-                <Patients />
+                <Patients expand="lg" />
               </ProtectedRoute>
             }
           />

@@ -5,6 +5,14 @@ import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
 import Modal from "react-bootstrap/Modal";
 import { Outlet } from "react-router-dom";
+import {
+  RiLoginCircleLine,
+  RiLogoutCircleRLine,
+  RiSettingsLine,
+  RiCalendarLine,
+  RiUser3Line,
+  RiDashboard3Line,
+} from "react-icons/ri";
 import LoginForm from "../login/LoginForm";
 import "./Header.css";
 import { useSelector, useDispatch } from "react-redux";
@@ -12,6 +20,7 @@ import { logout } from "../../slices/AuthSlice";
 
 function Header() {
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+  const username = useSelector((state) => state.auth.username);
   const dispatch = useDispatch();
   const [showLogin, setShowLogin] = useState(false);
 
@@ -19,29 +28,36 @@ function Header() {
   const handleShowLogin = () => setShowLogin(true);
 
   const handleLogout = () => {
-    dispatch(logout()); // Вызов действия logout
-    setShowLogin(false); // Закрыть модальное окно, если оно открыто
+    dispatch(logout());
+    setShowLogin(false);
   };
 
   return (
     <>
-      <Navbar expand="lg" className="bg-body-tertiary my-1 mx-1">
+      <Navbar expand="lg" bg="dark" className="bg-body-tertiary my-1 mx-1">
         <Container fluid>
-          <Navbar.Brand href="https://hukumabob.github.io/">
-            <img
-              src="../images/logo.svg"
-              width="30"
-              height="40"
-              className="d-inline-block align-top"
-              alt="Endosoft logo"
-            />
-          </Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
-            <Nav className="me-auto">
-              <Nav.Link href="dashboard">Dashboard</Nav.Link>
-              <Nav.Link href="patients">Patients</Nav.Link>
+            <Nav className="me-auto d-flex justify-content-center">
+              <Navbar.Brand href="https://hukumabob.github.io/">
+                <img
+                  src="../images/logo.svg"
+                  width="30"
+                  height="30"
+                  className="d-inline-block align-self-center"
+                  alt="Endosoft logo"
+                />
+              </Navbar.Brand>
+              <Nav.Link href="dashboard">
+                <RiDashboard3Line size="2em" />
+                Dashboard
+              </Nav.Link>
+              <Nav.Link href="patients">
+                <RiUser3Line size="2em" />
+                Patients
+              </Nav.Link>
               <NavDropdown title="Sheduling" id="basic-nav-dropdown">
+                <RiCalendarLine size="2em" />
                 <NavDropdown.Item href="today-schedule">Today</NavDropdown.Item>
                 <NavDropdown.Item href="#action/3.2">
                   This week
@@ -54,28 +70,36 @@ function Header() {
                   Whole time
                 </NavDropdown.Item>
               </NavDropdown>
+              <Nav.Link href="setup">
+                <RiSettingsLine size="2em" />
+                System setup
+              </Nav.Link>
+            </Nav>
+
+            <Nav>
+              {isAuthenticated ? (
+                <>
+                  <Navbar.Text
+                    onClick={handleLogout}
+                    className="d-inline-block align-self-center"
+                  >
+                    Welcome, {username}
+                    <RiLogoutCircleRLine size="2em" className=" pointed-icon" />
+                  </Navbar.Text>
+                </>
+              ) : (
+                <>
+                  <Navbar.Text
+                    onClick={handleShowLogin}
+                    className="d-inline-block align-self-center pointed-icon"
+                  >
+                    Login
+                    <RiLoginCircleLine size="2em" />
+                  </Navbar.Text>
+                </>
+              )}
             </Nav>
           </Navbar.Collapse>
-
-          {isAuthenticated ? (
-            <img
-              src="../../images/logout.svg"
-              width="30"
-              height="30"
-              className="d-inline-block align-top  inverted-icon"
-              alt="logout"
-              onClick={handleLogout}
-            />
-          ) : (
-            <img
-              src="../../images/login.svg"
-              width="30"
-              height="30"
-              className="d-inline-block align-top  inverted-icon"
-              alt="login"
-              onClick={handleShowLogin}
-            />
-          )}
         </Container>
       </Navbar>
       <Outlet />
