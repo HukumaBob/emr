@@ -1,50 +1,63 @@
-import React, { useEffect } from "react";
+// Patients.js
+import { useEffect } from "react";
 import Table from "react-bootstrap/Table";
+import Button from "react-bootstrap/Button";
+import Modal from "react-bootstrap/Modal";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchPatients } from "../../slices/PatientsSlice";
+import { fetchPatients } from "../../slices/patientsSlice";
+import { openForm, closeForm } from "../../slices/patientFormSlice.js";
+import PatientForm from "./PatientForm.js";
 
 const Patients = () => {
   const dispatch = useDispatch();
   const patients = useSelector((state) => state.patients);
+  const showForm = useSelector((state) => state.patientForm.showForm); // Используйте состояние из Redux
 
   useEffect(() => {
-    console.log("Patients component mounted");
     dispatch(fetchPatients());
   }, [dispatch]);
 
   return (
-    <Table striped bordered hover>
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>Patient`s name</th>
-          <th>DoB</th>
-          <th>Sex</th>
-          <th>Address</th>
-          <th>Phone Number</th>
-          {/* <th>Email</th>
-          <th>Created At</th>
-          <th>Updated At</th> */}
-        </tr>
-      </thead>
-      <tbody>
-        {patients.map((patient, index) => (
-          <tr key={patient.id}>
-            <td>{index + 1}</td>
-            <td>
-              {patient.first_name} {patient.middle_name} {patient.last_name}
-            </td>
-            <td>{patient.date_of_birth}</td>
-            <td>{patient.sex}</td>
-            <td>{patient.address}</td>
-            <td>{patient.phone_number}</td>
-            {/* <td>{patient.email}</td>
-            <td>{patient.created_at}</td>
-            <td>{patient.updated_at}</td> */}
+    <>
+      <Table striped bordered hover>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Patient`s name</th>
+            <th>DoB</th>
+            <th>Sex</th>
+            <th>Phone Number</th>
+            <th>
+              <Button onClick={() => dispatch(openForm())}>Add new</Button>
+            </th>
           </tr>
-        ))}
-      </tbody>
-    </Table>
+        </thead>
+        <tbody>
+          {patients.map((patient, index) => (
+            <tr key={patient.id}>
+              <td>{index + 1}</td>
+              <td>
+                {patient.first_name} {patient.middle_name} {patient.last_name}
+              </td>
+              <td>{patient.date_of_birth}</td>
+              <td>{patient.sex}</td>
+              <td>{patient.phone_number}</td>
+              <td></td>
+            </tr>
+          ))}
+        </tbody>
+      </Table>
+
+      <Modal show={showForm} onHide={() => dispatch(closeForm())}>
+        <Modal.Header closeButton>
+          <Modal.Title>Add New Patient</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <PatientForm />
+        </Modal.Body>
+        <Modal.Footer></Modal.Footer>
+      </Modal>
+    </>
   );
 };
 

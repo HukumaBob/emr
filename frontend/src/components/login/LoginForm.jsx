@@ -5,7 +5,7 @@ import Row from "react-bootstrap/Row";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { login } from "../../slices/AuthSlice";
+import { login } from "../../slices/authSlice";
 
 const LoginForm = ({ onLoginSuccess }) => {
   const [username, setUsername] = useState("");

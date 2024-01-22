@@ -16,7 +16,7 @@ import {
 import LoginForm from "../login/LoginForm";
 import "./Header.css";
 import { useSelector, useDispatch } from "react-redux";
-import { logout } from "../../slices/AuthSlice";
+import { logout } from "../../slices/authSlice";
 
 function Header() {
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
