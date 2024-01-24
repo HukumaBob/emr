@@ -104,11 +104,11 @@ function Header() {
       </Navbar>
       <Outlet />
       <Modal show={showLogin} onHide={handleCloseLogin}>
-        <Modal.Header closeButton className="bg-secondary">
+        <Modal.Header closeButton>
           <Modal.Title>Login</Modal.Title>
         </Modal.Header>
 
-        <Modal.Body className="bg-secondary">
+        <Modal.Body>
           <LoginForm onLoginSuccess={handleCloseLogin} />
         </Modal.Body>
       </Modal>

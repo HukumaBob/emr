@@ -11,6 +11,14 @@ const rootReducer = combineReducers({
 
 const store = configureStore({
   reducer: rootReducer,
+  devTools: {
+    serialize: {
+      replacer: (key, value) => {
+        if (key === "fileInput") return undefined;
+        else return value;
+      },
+    },
+  },
 });
 
 export default store;

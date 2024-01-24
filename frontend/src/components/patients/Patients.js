@@ -5,7 +5,11 @@ import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchPatients } from "../../slices/patientsSlice";
-import { openForm, closeForm } from "../../slices/patientFormSlice.js";
+import {
+  openForm,
+  closeForm,
+  loadPatient,
+} from "../../slices/patientFormSlice.js";
 import PatientForm from "./PatientForm.js";
 
 const Patients = () => {
@@ -42,7 +46,16 @@ const Patients = () => {
               <td>{patient.date_of_birth}</td>
               <td>{patient.sex}</td>
               <td>{patient.phone_number}</td>
-              <td></td>
+              <td>
+                <Button
+                  onClick={() => {
+                    dispatch(loadPatient(patient.id));
+                    dispatch(openForm());
+                  }}
+                >
+                  Change
+                </Button>
+              </td>
             </tr>
           ))}
         </tbody>
@@ -50,12 +63,12 @@ const Patients = () => {
 
       <Modal show={showForm} onHide={() => dispatch(closeForm())}>
         <Modal.Header closeButton>
-          <Modal.Title>Add New Patient</Modal.Title>
+          <Modal.Title>New patient</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <PatientForm />
         </Modal.Body>
-        <Modal.Footer></Modal.Footer>
+        {/* <Modal.Footer></Modal.Footer> */}
       </Modal>
     </>
   );
