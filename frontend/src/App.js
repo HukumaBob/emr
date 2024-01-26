@@ -5,9 +5,6 @@ import Header from "./components/header/Header";
 import Dashboard from "./components/dashboard/Dashboard";
 import Patients from "./components/patients/Patients";
 import TodaySchedule from "./components/appointmens/TodaySchedule";
-// import ThisWeekSchedule from './ThisWeekSchedule';
-// import ThisMonthSchedule from './ThisMonthSchedule';
-// import WholeTimeSchedule from './WholeTimeSchedule';
 import ProtectedRoute from "./components/routers/ProtectedRoute";
 import { ToastContainer } from "react-toastify";
 import Container from "react-bootstrap/esm/Container";
@@ -16,7 +13,7 @@ const App = () => {
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
 
   return (
-    <Container bg="dark" fluid className="p-0" data-bs-theme="dark">
+    <Container bg="dark" fluid className="p-0 m-0" data-bs-theme="dark">
       <ToastContainer />
       <BrowserRouter>
         <Header />
@@ -39,8 +36,6 @@ const App = () => {
               </ProtectedRoute>
             }
           />
-          {/* <Route path="login" element={<LoginForm />} /> */}
-          {/* </Route> */}
           <Route
             path="today-schedule"
             element={
