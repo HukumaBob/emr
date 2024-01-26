@@ -34,7 +34,7 @@ function Header() {
 
   return (
     <>
-      <Navbar expand="lg" bg="dark" className="bg-body-tertiary">
+      <Navbar expand="lg" bg="dark" className="bg-body-tertiary m-1">
         <Container fluid>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">

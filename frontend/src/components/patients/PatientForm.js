@@ -9,6 +9,7 @@ import {
   createPatient,
   updatePatient,
   closeForm,
+  deletePatient,
 } from "../../slices/patientFormSlice";
 import { fetchPatients } from "../../slices/patientsSlice";
 import "./PatientForm.css";
@@ -81,7 +82,11 @@ const PatientForm = () => {
       if (patient.id) {
         // Обновляем существующего пациента
         dispatchRedux(updatePatient({ ...patient, fileInput }))
-          .then(handleSuccess)
+          .then(() => {
+            dispatchRedux(closeForm()); // Закрываем модальное окно после успешного выполнения
+            dispatchRedux(fetchPatients(currentPage)); // Запрашиваем данные о пациентах снова
+            dispatch({ type: "reset" }); // Сбрасываем состояние формы
+          })
           .catch(handleError);
       } else {
         dispatchRedux(createPatient(patient))
@@ -97,13 +102,21 @@ const PatientForm = () => {
     }
   };
 
+  const handleDeletePatient = (e) => {
+    e.preventDefault();
+    if (patientFormStatus === "idle") {
+      if (patient.id) {
+        dispatchRedux(deletePatient());
+      }
+    }
+  };
+
   useEffect(() => {
     dispatchRedux(fetchPatients(currentPage));
   }, [currentPage, dispatchRedux]);
 
   const handleSuccess = () => {
     dispatchRedux(closeForm()); // Закрываем модальное окно после успешного выполнения
-    // dispatchRedux(fetchPatients(currentPage)); // Запрашиваем данные о пациентах снова
     dispatch({ type: "reset" }); // Сбрасываем состояние формы
   };
 
@@ -256,6 +269,9 @@ const PatientForm = () => {
           <Form.Group as={Row} className="mb-3">
             <Button variant="primary" type="submit">
               Submit
+            </Button>
+            <Button variant="danger" type="button">
+              Delete
             </Button>
           </Form.Group>
         </Form>

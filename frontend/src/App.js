@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useSelector } from "react-redux";
 import Header from "./components/header/Header";
 import Dashboard from "./components/dashboard/Dashboard";
-import Patients from "./components/patients/Patients";
+import PatientMainPage from "./components/patients/PatientMainPage";
 import TodaySchedule from "./components/appointmens/TodaySchedule";
 import ProtectedRoute from "./components/routers/ProtectedRoute";
 import { ToastContainer } from "react-toastify";
@@ -18,7 +18,6 @@ const App = () => {
       <BrowserRouter>
         <Header />
         <Routes>
-          {/* <Route path="/" element={<Header />}> */}
           <Route index element={<div>Access limited</div>} />
           <Route
             path="dashboard"
@@ -32,7 +31,7 @@ const App = () => {
             path="patients"
             element={
               <ProtectedRoute isAuthenticated={isAuthenticated}>
-                <Patients expand="lg" />
+                <PatientMainPage expand="lg" />
               </ProtectedRoute>
             }
           />

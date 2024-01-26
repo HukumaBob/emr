@@ -15,11 +15,15 @@ export const createPatient = createAsyncThunk(
         }
       });
 
-      const response = await axios.post(`${BASE_URL}${PATIENTS}`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data", // Установите заголовок Content-Type в multipart/form-data
-        },
-      });
+      const response = await axios.postForm(
+        `${BASE_URL}${PATIENTS}`,
+        formData
+        // {
+        //   headers: {
+        //     "Content-Type": "multipart/form-data", // Установите заголовок Content-Type в multipart/form-data
+        //   },
+        // }
+      );
       return response.data;
     } catch (error) {
       return rejectWithValue(error.message);
@@ -32,6 +36,18 @@ export const loadPatient = createAsyncThunk(
   async (patientId, { rejectWithValue }) => {
     try {
       const response = await axios.get(`${BASE_URL}${PATIENTS}${patientId}`);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+export const deletePatient = createAsyncThunk(
+  "patientForm/deletePatient",
+  async (patientId, { rejectWithValue }) => {
+    try {
+      const response = await axios.delete(`${BASE_URL}${PATIENTS}${patientId}`);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.message);
@@ -57,14 +73,14 @@ export const updatePatient = createAsyncThunk(
         formData.append("photo", fileInput.current.files[0]);
       }
 
-      const response = await axios.put(
+      const response = await axios.putForm(
         `${BASE_URL}${PATIENTS}${patient.id}/`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data", // Установите заголовок Content-Type в multipart/form-data
-          },
-        }
+        formData
+        // {
+        //   headers: {
+        //     "Content-Type": "multipart/form-data", // Установите заголовок Content-Type в multipart/form-data
+        //   },
+        // }
       );
       return response.data;
     } catch (error) {
@@ -93,7 +109,6 @@ const patientFormSlice = createSlice({
     });
     builder.addCase(createPatient.fulfilled, (state) => {
       state.status = "succeeded";
-      state.showForm = false; // Закрываем форму после успешного создания пациента
     });
     builder.addCase(createPatient.rejected, (state, action) => {
       state.status = "failed";
@@ -101,7 +116,13 @@ const patientFormSlice = createSlice({
     });
     builder.addCase(loadPatient.fulfilled, (state, action) => {
       state.patient = action.payload;
-      // state.showForm = false;
+    });
+    builder.addCase(updatePatient.fulfilled, (state, action) => {
+      state.status = "succeeded";
+      // Обновите данные пациента в состоянии, если это необходимо
+    });
+    builder.addCase(deletePatient.fulfilled, (state, action) => {
+      state.status = "deleted";
     });
   },
 });
