@@ -10,6 +10,7 @@ import {
   updatePatient,
   closeForm,
   deletePatient,
+  deletePhotoPatient,
 } from "../../slices/patientFormSlice";
 import { fetchPatients } from "../../slices/patientsSlice";
 import "./PatientForm.css";
@@ -106,7 +107,21 @@ const PatientForm = () => {
     e.preventDefault();
     if (patientFormStatus === "idle") {
       if (patient.id) {
-        dispatchRedux(deletePatient());
+        dispatchRedux(deletePhotoPatient(patient.id)) // Удаляем фотографию пациента
+          .then(() => {
+            dispatchRedux(deletePatient(patient.id, dispatch))
+              .then(() => {
+                dispatchRedux(closeForm()); // Закрываем модальное окно после успешного выполнения
+                dispatchRedux(fetchPatients(currentPage)); // Запрашиваем данные о пациентах снова
+                dispatch({ type: "reset" }); // Сбрасываем состояние формы
+              })
+              .catch((error) => {
+                console.error("Ошибка при удалении пациента:", error);
+              });
+          })
+          .catch((error) => {
+            console.error("Ошибка при удалении фотографии пациента:", error);
+          });
       }
     }
   };
@@ -114,11 +129,6 @@ const PatientForm = () => {
   useEffect(() => {
     dispatchRedux(fetchPatients(currentPage));
   }, [currentPage, dispatchRedux]);
-
-  const handleSuccess = () => {
-    dispatchRedux(closeForm()); // Закрываем модальное окно после успешного выполнения
-    dispatch({ type: "reset" }); // Сбрасываем состояние формы
-  };
 
   const handleError = (error) => {
     console.error("Ошибка при обновлении/создании пациента:", error);
@@ -270,7 +280,11 @@ const PatientForm = () => {
             <Button variant="primary" type="submit">
               Submit
             </Button>
-            <Button variant="danger" type="button">
+            <Button
+              variant="danger"
+              type="button"
+              onClick={handleDeletePatient}
+            >
               Delete
             </Button>
           </Form.Group>

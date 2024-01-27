@@ -25,7 +25,7 @@ const Patients = () => {
   // const [active, setActive] = useState(1);
 
   useEffect(() => {
-    dispatch(fetchPatients(currentPage));
+    dispatch(fetchPatients(currentPage, dispatch));
   }, [dispatch, currentPage]);
 
   return (

@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { BASE_URL, PATIENTS } from "../api/apiConfig";
+import { handleError } from "../components/error/handlerError";
 
 export const createPatient = createAsyncThunk(
   "patientForm/createPatient",
@@ -15,15 +16,7 @@ export const createPatient = createAsyncThunk(
         }
       });
 
-      const response = await axios.postForm(
-        `${BASE_URL}${PATIENTS}`,
-        formData
-        // {
-        //   headers: {
-        //     "Content-Type": "multipart/form-data", // Установите заголовок Content-Type в multipart/form-data
-        //   },
-        // }
-      );
+      const response = await axios.postForm(`${BASE_URL}${PATIENTS}`, formData);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.message);
@@ -45,12 +38,26 @@ export const loadPatient = createAsyncThunk(
 
 export const deletePatient = createAsyncThunk(
   "patientForm/deletePatient",
-  async (patientId, { rejectWithValue }) => {
+  async (patientId, { dispatch, rejectWithValue }) => {
     try {
       const response = await axios.delete(`${BASE_URL}${PATIENTS}${patientId}`);
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.message);
+      return handleError(error, dispatch, rejectWithValue);
+    }
+  }
+);
+
+export const deletePhotoPatient = createAsyncThunk(
+  "patientForm/deletePhotoPatient",
+  async (patientId, { dispatch, rejectWithValue }) => {
+    try {
+      const response = await axios.delete(
+        `${BASE_URL}${PATIENTS}${patientId}/delete_photo`
+      );
+      return response.data;
+    } catch (error) {
+      return handleError(error, dispatch, rejectWithValue);
     }
   }
 );
@@ -76,11 +83,6 @@ export const updatePatient = createAsyncThunk(
       const response = await axios.putForm(
         `${BASE_URL}${PATIENTS}${patient.id}/`,
         formData
-        // {
-        //   headers: {
-        //     "Content-Type": "multipart/form-data", // Установите заголовок Content-Type в multipart/form-data
-        //   },
-        // }
       );
       return response.data;
     } catch (error) {
@@ -122,6 +124,9 @@ const patientFormSlice = createSlice({
       // Обновите данные пациента в состоянии, если это необходимо
     });
     builder.addCase(deletePatient.fulfilled, (state, action) => {
+      state.status = "deleted";
+    });
+    builder.addCase(deletePhotoPatient.fulfilled, (state, action) => {
       state.status = "deleted";
     });
   },
