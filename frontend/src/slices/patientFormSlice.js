@@ -1,99 +1,16 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import axios from "axios";
 import { BASE_URL, PATIENTS } from "../api/apiConfig";
-import { handleError } from "../components/error/handlerError";
-
-export const createPatient = createAsyncThunk(
-  "patientForm/createPatient",
-  async (patient, { rejectWithValue }) => {
-    try {
-      const formData = new FormData();
-
-      // Добавьте все поля формы в formData
-      Object.keys(patient).forEach((key) => {
-        if (patient[key] !== null) {
-          formData.append(key, patient[key]);
-        }
-      });
-
-      const response = await axios.postForm(`${BASE_URL}${PATIENTS}`, formData);
-      return response.data;
-    } catch (error) {
-      return rejectWithValue(error.message);
-    }
-  }
-);
-
-export const loadPatient = createAsyncThunk(
-  "patientForm/loadPatient",
-  async (patientId, { rejectWithValue }) => {
-    try {
-      const response = await axios.get(`${BASE_URL}${PATIENTS}${patientId}`);
-      return response.data;
-    } catch (error) {
-      return rejectWithValue(error.message);
-    }
-  }
-);
-
-export const deletePatient = createAsyncThunk(
-  "patientForm/deletePatient",
-  async (patientId, { dispatch, rejectWithValue }) => {
-    try {
-      const response = await axios.delete(`${BASE_URL}${PATIENTS}${patientId}`);
-      return response.data;
-    } catch (error) {
-      return handleError(error, dispatch, rejectWithValue);
-    }
-  }
-);
-
-export const deletePhotoPatient = createAsyncThunk(
-  "patientForm/deletePhotoPatient",
-  async (patientId, { dispatch, rejectWithValue }) => {
-    try {
-      const response = await axios.delete(
-        `${BASE_URL}${PATIENTS}${patientId}/delete_photo`
-      );
-      return response.data;
-    } catch (error) {
-      return handleError(error, dispatch, rejectWithValue);
-    }
-  }
-);
-
-export const updatePatient = createAsyncThunk(
-  "patientForm/updatePatient",
-  async ({ fileInput, ...patient }, { rejectWithValue }) => {
-    try {
-      const formData = new FormData();
-
-      // Добавьте все поля формы в formData
-      Object.keys(patient).forEach((key) => {
-        if (key !== "photo" && patient[key] !== null) {
-          formData.append(key, patient[key]);
-        }
-      });
-
-      // Если файл был выбран, добавьте его в formData
-      if (fileInput.current.files[0]) {
-        formData.append("photo", fileInput.current.files[0]);
-      }
-
-      const response = await axios.putForm(
-        `${BASE_URL}${PATIENTS}${patient.id}/`,
-        formData
-      );
-      return response.data;
-    } catch (error) {
-      return rejectWithValue(error.message);
-    }
-  }
-);
+import { apiRequest } from "../api/apiRequest";
+import { createPatient } from "./patientForm/createPatient";
+import { deletePatient } from "./patientForm/deletePatient";
+import { deletePhotoPatient } from "./patientForm/deletePhotoPatient";
+import { updatePatient } from "./patientForm/updatePatient";
+import { loadPatient } from "./patientForm/loadPatient";
+import { reducer } from "./patientForm/reducer.js";
 
 const patientFormSlice = createSlice({
   name: "patientForm",
-  initialState: { status: "idle", error: null, showForm: false, patient: null }, // Добавлено состояние showForm
+  initialState: { status: "idle", error: null, showForm: false, patient: null },
   reducers: {
     openForm: (state) => {
       state.showForm = true;
@@ -104,7 +21,7 @@ const patientFormSlice = createSlice({
       state.status = "idle";
       state.patient = null;
     },
-  }, // Добавлены действия openForm и closeForm
+  },
   extraReducers: (builder) => {
     builder.addCase(createPatient.pending, (state) => {
       state.status = "loading";
@@ -121,7 +38,6 @@ const patientFormSlice = createSlice({
     });
     builder.addCase(updatePatient.fulfilled, (state, action) => {
       state.status = "succeeded";
-      // Обновите данные пациента в состоянии, если это необходимо
     });
     builder.addCase(deletePatient.fulfilled, (state, action) => {
       state.status = "deleted";
@@ -132,6 +48,6 @@ const patientFormSlice = createSlice({
   },
 });
 
-export const { openForm, closeForm } = patientFormSlice.actions; // Экспортируем действия openForm и closeForm
+export const { openForm, closeForm } = patientFormSlice.actions;
 export const status = (state) => state.patientForm.status;
 export default patientFormSlice.reducer;

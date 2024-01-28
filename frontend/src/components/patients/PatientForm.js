@@ -5,13 +5,11 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { useReducer, useRef, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  createPatient,
-  updatePatient,
-  closeForm,
-  deletePatient,
-  deletePhotoPatient,
-} from "../../slices/patientFormSlice";
+import { closeForm } from "../../slices/patientFormSlice";
+import { createPatient } from "../../slices/patientForm/createPatient";
+import { deletePatient } from "../../slices/patientForm/deletePatient";
+import { deletePhotoPatient } from "../../slices/patientForm/deletePhotoPatient";
+import { updatePatient } from "../../slices/patientForm/updatePatient";
 import { fetchPatients } from "../../slices/patientsSlice";
 import "./PatientForm.css";
 
@@ -65,7 +63,11 @@ const PatientForm = () => {
   const [selectedImage, setSelectedImage] = useState(null);
 
   const handleFileChange = (e) => {
-    dispatch({ type: "field", fieldName: "photo", payload: e.target.files[0] });
+    dispatch({
+      type: "field",
+      fieldName: e.target.name,
+      payload: e.target.files[0],
+    });
     setSelectedImage(URL.createObjectURL(e.target.files[0]));
   };
 
@@ -76,24 +78,28 @@ const PatientForm = () => {
       payload: e.target.value,
     });
   };
+
   const currentPage = useSelector((state) => state.patients.currentPage);
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (patientFormStatus === "idle") {
       if (patient.id) {
         // Обновляем существующего пациента
-        dispatchRedux(updatePatient({ ...patient, fileInput }))
+        dispatchRedux(
+          updatePatient({ ...patient, fileInput, fieldName: "photo" }, dispatch)
+        )
           .then(() => {
             dispatchRedux(closeForm()); // Закрываем модальное окно после успешного выполнения
-            dispatchRedux(fetchPatients(currentPage)); // Запрашиваем данные о пациентах снова
+            dispatchRedux(fetchPatients(currentPage, dispatch)); // Запрашиваем данные о пациентах снова
             dispatch({ type: "reset" }); // Сбрасываем состояние формы
           })
           .catch(handleError);
       } else {
-        dispatchRedux(createPatient(patient))
+        dispatchRedux(createPatient(patient, dispatch))
           .then(() => {
             dispatchRedux(closeForm()); // Закрываем модальное окно после успешного выполнения
-            dispatchRedux(fetchPatients(1)); // Запрашиваем данные о пациентах снова
+            dispatchRedux(fetchPatients(1, dispatch)); // Запрашиваем данные о пациентах снова
             dispatch({ type: "reset" }); // Сбрасываем состояние формы
           })
           .catch((error) => {
@@ -112,7 +118,7 @@ const PatientForm = () => {
             dispatchRedux(deletePatient(patient.id, dispatch))
               .then(() => {
                 dispatchRedux(closeForm()); // Закрываем модальное окно после успешного выполнения
-                dispatchRedux(fetchPatients(currentPage)); // Запрашиваем данные о пациентах снова
+                dispatchRedux(fetchPatients(currentPage, dispatch)); // Запрашиваем данные о пациентах снова
                 dispatch({ type: "reset" }); // Сбрасываем состояние формы
               })
               .catch((error) => {
@@ -127,7 +133,7 @@ const PatientForm = () => {
   };
 
   useEffect(() => {
-    dispatchRedux(fetchPatients(currentPage));
+    dispatchRedux(fetchPatients(currentPage, dispatch));
   }, [currentPage, dispatchRedux]);
 
   const handleError = (error) => {
@@ -145,6 +151,7 @@ const PatientForm = () => {
             <Col sm={9}>
               <Form.Control
                 type="file"
+                name="photo"
                 ref={fileInput}
                 onChange={handleFileChange}
               />

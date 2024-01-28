@@ -6,11 +6,8 @@ import Card from "react-bootstrap/Card";
 import ListGroup from "react-bootstrap/ListGroup";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchPatients, setCurrentPage } from "../../slices/patientsSlice";
-import {
-  openForm,
-  closeForm,
-  loadPatient,
-} from "../../slices/patientFormSlice.js";
+import { openForm, closeForm } from "../../slices/patientFormSlice.js";
+import { loadPatient } from "../../slices/patientForm/loadPatient.js";
 import PatientForm from "./PatientForm.js";
 import Pagination from "react-bootstrap/Pagination";
 import { PAGE_SIZE } from "../../api/apiConfig.js";
