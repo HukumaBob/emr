@@ -1,44 +1,7 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import axios from "axios";
-import { toast } from "react-toastify";
+import { createSlice } from "@reduxjs/toolkit";
 import "react-toastify/dist/ReactToastify.css";
-import { BASE_URL, LOGIN_ENDPOINT } from "../api/apiConfig";
-
-// Создаем асинхронные действия
-export const login = createAsyncThunk(
-  "auth/login",
-  async ({ username, password }, { rejectWithValue }) => {
-    try {
-      const response = await axios.post(`${BASE_URL}${LOGIN_ENDPOINT}`, {
-        username,
-        password,
-      });
-      const token = response.data ? response.data.access : null;
-      if (token) {
-        localStorage.setItem("token", token);
-        localStorage.setItem("username", username);
-      }
-      return { token, username };
-    } catch (error) {
-      toast.warning(`Login failed: ${error.response.data.detail}`, {
-        position: "top-right",
-        autoClose: 2000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
-      return rejectWithValue(error.message);
-    }
-  }
-);
-
-export const logout = createAsyncThunk("auth/logout", () => {
-  localStorage.removeItem("token");
-  localStorage.removeItem("username");
-  return {};
-});
+import { login } from "./authForm/login";
+import { logout } from "./authForm/logout";
 
 const authSlice = createSlice({
   name: "auth",

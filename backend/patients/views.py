@@ -22,7 +22,11 @@ class PatientViewSet(viewsets.ModelViewSet):
             if default_storage.exists(patient.photo.name):
                 print(patient.photo.name)
                 default_storage.delete(patient.photo.name)
+                if default_storage.exists(patient.photo.name):
+                    return Response(
+                        {'detail': 'Failed to delete photo'},
+                        status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                        )
             patient.photo = None
             patient.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
-    

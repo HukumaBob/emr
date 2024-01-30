@@ -16,7 +16,7 @@ import {
 import LoginForm from "../login/LoginForm";
 import "./Header.css";
 import { useSelector, useDispatch } from "react-redux";
-import { logout } from "../../slices/authSlice";
+import { logout } from "../../slices/authForm/logout";
 
 function Header() {
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
@@ -28,7 +28,7 @@ function Header() {
   const handleShowLogin = () => setShowLogin(true);
 
   const handleLogout = () => {
-    dispatch(logout());
+    dispatch(logout(dispatch));
     setShowLogin(false);
   };
 
@@ -56,8 +56,14 @@ function Header() {
                 <RiUser3Line size="2em" />
                 Patients
               </Nav.Link>
-              <NavDropdown title="Sheduling" id="basic-nav-dropdown">
-                <RiCalendarLine size="2em" />
+              <NavDropdown
+                title={
+                  <>
+                    <RiCalendarLine size="2em" /> Sheduling
+                  </>
+                }
+                id="basic-nav-dropdown"
+              >
                 <NavDropdown.Item href="today-schedule">Today</NavDropdown.Item>
                 <NavDropdown.Item href="#action/3.2">
                   This week

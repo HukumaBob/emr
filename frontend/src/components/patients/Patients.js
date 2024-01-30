@@ -113,7 +113,7 @@ const Patients = () => {
         </ListGroup.Item>
         <Modal show={showForm} onHide={() => dispatch(closeForm())}>
           <Modal.Header closeButton>
-            <Modal.Title>Patient information</Modal.Title>
+            <Modal.Title>Change patient profile</Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <PatientForm />

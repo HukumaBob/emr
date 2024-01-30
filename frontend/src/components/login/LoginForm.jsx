@@ -6,7 +6,7 @@ import Card from "react-bootstrap/Card";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { login } from "../../slices/authSlice";
+import { login } from "../../slices/authForm/login";
 
 const LoginForm = ({ onLoginSuccess }) => {
   const [username, setUsername] = useState("");
@@ -16,7 +16,7 @@ const LoginForm = ({ onLoginSuccess }) => {
   const handleLogin = (e) => {
     e.preventDefault();
     if (username && password) {
-      dispatch(login({ username, password, onLoginSuccess }));
+      dispatch(login({ username, password, onLoginSuccess }, dispatch));
     } else {
       console.error("Username and password are required");
     }

@@ -1,12 +1,10 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { BASE_URL, PATIENTS } from "../api/apiConfig";
-import { apiRequest } from "../api/apiRequest";
+import { createSlice } from "@reduxjs/toolkit";
 import { createPatient } from "./patientForm/createPatient";
 import { deletePatient } from "./patientForm/deletePatient";
 import { deletePhotoPatient } from "./patientForm/deletePhotoPatient";
 import { updatePatient } from "./patientForm/updatePatient";
 import { loadPatient } from "./patientForm/loadPatient";
-import { reducer } from "./patientForm/reducer.js";
+// import reducers from "./patientForm/reducer.js";
 
 const patientFormSlice = createSlice({
   name: "patientForm",
@@ -45,6 +43,7 @@ const patientFormSlice = createSlice({
     builder.addCase(deletePhotoPatient.fulfilled, (state, action) => {
       state.status = "deleted";
     });
+    builder.addDefaultCase((state) => state);
   },
 });
 

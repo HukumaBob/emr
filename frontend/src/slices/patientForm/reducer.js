@@ -40,7 +40,14 @@ const extraReducers = (builder) => {
   builder.addCase(deletePhotoPatient.fulfilled, (state, action) => {
     state.status = "deleted";
   });
-  builder.addDefaultCase((state) => state);
+
+  // Добавьте дефолтный case здесь
+  builder.addDefaultCase((state) => {
+    return {
+      ...state,
+      status: "unknown",
+    };
+  });
 };
 
 export default createReducer(reducers, extraReducers);

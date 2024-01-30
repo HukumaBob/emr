@@ -12,39 +12,10 @@ import { deletePhotoPatient } from "../../slices/patientForm/deletePhotoPatient"
 import { updatePatient } from "../../slices/patientForm/updatePatient";
 import { fetchPatients } from "../../slices/patientsSlice";
 import "./PatientForm.css";
-
-const initialPatientState = {
-  first_name: "",
-  middle_name: "",
-  last_name: "",
-  date_of_birth: "",
-  sex: "",
-  address: "",
-  phone_number: "",
-  email: "",
-  // photo: null,
-};
-
-function patientReducer(state, action) {
-  switch (action.type) {
-    case "field": {
-      return {
-        ...state,
-        [action.fieldName]: action.payload,
-      };
-    }
-    case "reset":
-      return initialPatientState;
-    case "load": {
-      return {
-        ...state,
-        ...action.payload,
-      };
-    }
-    default:
-      return state;
-  }
-}
+import {
+  initialPatientState,
+  patientReducer,
+} from "../../slices/patientForm/patientReducer";
 
 const PatientForm = () => {
   const [patient, dispatch] = useReducer(patientReducer, initialPatientState);
@@ -81,30 +52,45 @@ const PatientForm = () => {
 
   const currentPage = useSelector((state) => state.patients.currentPage);
 
+  const createPatientData = () => {
+    dispatchRedux(createPatient(patient, dispatch))
+      .then(() => {
+        dispatchRedux(closeForm()); // Закрываем модальное окно после успешного выполнения
+        dispatchRedux(fetchPatients(1, dispatch)); // Запрашиваем данные о пациентах снова
+        dispatch({ type: "reset" }); // Сбрасываем состояние формы
+      })
+      .catch((error) => {
+        console.error("Ошибка при создании пациента:", error);
+      });
+  };
+  const updatePatientData = () => {
+    dispatchRedux(
+      updatePatient({ ...patient, fileInput, fieldName: "photo" }, dispatch)
+    )
+      .then(() => {
+        dispatchRedux(closeForm()); // Закрываем модальное окно после успешного выполнения
+        dispatchRedux(fetchPatients(currentPage, dispatch)); // Запрашиваем данные о пациентах снова
+        dispatch({ type: "reset" }); // Сбрасываем состояние формы
+      })
+      .catch(handleError);
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (patientFormStatus === "idle") {
       if (patient.id) {
-        // Обновляем существующего пациента
-        dispatchRedux(
-          updatePatient({ ...patient, fileInput, fieldName: "photo" }, dispatch)
-        )
-          .then(() => {
-            dispatchRedux(closeForm()); // Закрываем модальное окно после успешного выполнения
-            dispatchRedux(fetchPatients(currentPage, dispatch)); // Запрашиваем данные о пациентах снова
-            dispatch({ type: "reset" }); // Сбрасываем состояние формы
-          })
-          .catch(handleError);
+        if (patient.photo && fileInput.current.files[0]) {
+          dispatchRedux(deletePhotoPatient(patient.id))
+            .then(() => {
+              // После успешного удаления фото обновляем пациента
+              updatePatientData();
+            })
+            .catch(handleError);
+        } else {
+          updatePatientData();
+        }
       } else {
-        dispatchRedux(createPatient(patient, dispatch))
-          .then(() => {
-            dispatchRedux(closeForm()); // Закрываем модальное окно после успешного выполнения
-            dispatchRedux(fetchPatients(1, dispatch)); // Запрашиваем данные о пациентах снова
-            dispatch({ type: "reset" }); // Сбрасываем состояние формы
-          })
-          .catch((error) => {
-            console.error("Ошибка при создании пациента:", error);
-          });
+        createPatientData();
       }
     }
   };
@@ -113,7 +99,7 @@ const PatientForm = () => {
     e.preventDefault();
     if (patientFormStatus === "idle") {
       if (patient.id) {
-        dispatchRedux(deletePhotoPatient(patient.id)) // Удаляем фотографию пациента
+        dispatchRedux(deletePhotoPatient(patient.id, dispatch))
           .then(() => {
             dispatchRedux(deletePatient(patient.id, dispatch))
               .then(() => {
@@ -283,17 +269,22 @@ const PatientForm = () => {
               />
             </Col>
           </Form.Group>
-          <Form.Group as={Row} className="mb-3">
-            <Button variant="primary" type="submit">
-              Submit
-            </Button>
-            <Button
-              variant="danger"
-              type="button"
-              onClick={handleDeletePatient}
-            >
-              Delete
-            </Button>
+          <Form.Group as={Row} className="mb-3 justify-content-md-center">
+            <Col sm={6}>
+              <Button variant="primary" type="submit" style={{ width: "100%" }}>
+                Submit
+              </Button>
+            </Col>
+            <Col sm={6}>
+              <Button
+                variant="danger"
+                type="button"
+                onClick={handleDeletePatient}
+                style={{ width: "100%" }}
+              >
+                Delete
+              </Button>
+            </Col>
           </Form.Group>
         </Form>
       </Card.Body>
