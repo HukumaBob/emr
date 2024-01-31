@@ -1,8 +1,11 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Table from "react-bootstrap/Table";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Card from "react-bootstrap/Card";
+import Form from "react-bootstrap/Form";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
 import ListGroup from "react-bootstrap/ListGroup";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchPatients, setCurrentPage } from "../../slices/patientsSlice.js";
@@ -21,20 +24,62 @@ const PatientsList = () => {
   const patients = useSelector((state) => state.patients.patients);
   const totalPages = useSelector((state) => state.patients.totalPages);
   const showForm = useSelector((state) => state.patientForm.showForm);
+  const [filters, setFilters] = useState({});
+
+  const handleFilterChange = (event) => {
+    setFilters({
+      ...filters,
+      [event.target.name]: event.target.value,
+    });
+  };
 
   useEffect(() => {
-    dispatch(fetchPatients(currentPage, dispatch));
-  }, [dispatch, currentPage]);
+    dispatch(fetchPatients({ page: currentPage, filters: filters }));
+  }, [dispatch, currentPage, filters]);
 
   return (
     <Card className="m-1">
       <ListGroup variant="flush">
         <ListGroup.Item>
+          <Form>
+            <Form.Group
+              as={Row}
+              className="mb-1"
+              controlId="formPlaintextEmail"
+            >
+              <Col sm="6">
+                <Form.Control
+                  type="text"
+                  name="first_name"
+                  placeholder="First name"
+                  onChange={handleFilterChange}
+                />
+              </Col>
+              <Col sm="6">
+                <Form.Control
+                  type="text"
+                  name="last_name"
+                  placeholder="Last name"
+                  onChange={handleFilterChange}
+                />
+              </Col>
+            </Form.Group>
+            {/* <input
+              type="text"
+              name="last_name"
+              placeholder="Last name"
+              // onChange={handleFilterChange}
+            />
+            <input
+              type="date"
+              name="date_of_birth"
+              // onChange={handleFilterChange}
+            /> */}
+          </Form>
           <Table striped bordered hover>
             <thead>
               <tr>
-                <th>#</th>
-                <th colspan="2">
+                <th colSpan="3">
                   <Button
                     className="my-button"
                     onClick={() => dispatch(openForm())}

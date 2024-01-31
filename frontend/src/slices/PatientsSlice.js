@@ -6,12 +6,19 @@ import { handleError } from "../components/error/handlerError";
 
 export const fetchPatients = createAsyncThunk(
   "patients/fetchPatients",
-  async (page, { dispatch, rejectWithValue }) => {
+  async (arg, { dispatch, rejectWithValue }) => {
+    const { page, filters } =
+      typeof arg === "object" ? arg : { page: arg, filters: {} };
+    const filterParams = new URLSearchParams(filters).toString();
     try {
       const response = await fetch(
-        `${BASE_URL}${PATIENTS}?page=${page}&page_size=${PAGE_SIZE}`
+        `${BASE_URL}${PATIENTS}?page=${page}&page_size=${PAGE_SIZE}&${filterParams}`
+      );
+      console.log(
+        `${BASE_URL}${PATIENTS}?page=${page}&page_size=${PAGE_SIZE}&${filterParams}`
       );
       const data = await response.json();
+      console.log(data);
       return data;
     } catch (error) {
       return handleError(error, dispatch, rejectWithValue);

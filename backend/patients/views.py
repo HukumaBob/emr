@@ -1,18 +1,20 @@
 from rest_framework import viewsets, status
 from rest_framework.response import Response
+from django_filters.rest_framework import DjangoFilterBackend
 from django.core.files.storage import default_storage
 from rest_framework.decorators import action
-# from rest_framework.pagination import PageNumberPagination
-# from .pagination import StandardResultsSetPagination
 from .models import Patient
 from .serializers import PatientSerializer
 from .pagination import StandardResultsSetPagination
+from .filters import PatientFilter
 
 
 class PatientViewSet(viewsets.ModelViewSet):
     queryset = Patient.objects.all()
     serializer_class = PatientSerializer
     pagination_class = StandardResultsSetPagination
+    filter_backends = (DjangoFilterBackend,)
+    filterset_class = PatientFilter
 
     @action(detail=True, methods=['delete'])
     def delete_photo(self, request, pk=None):
