@@ -5,21 +5,22 @@ import Modal from "react-bootstrap/Modal";
 import Card from "react-bootstrap/Card";
 import ListGroup from "react-bootstrap/ListGroup";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchPatients, setCurrentPage } from "../../slices/patientsSlice";
+import { fetchPatients, setCurrentPage } from "../../slices/patientsSlice.js";
 import { openForm, closeForm } from "../../slices/patientFormSlice.js";
 import { loadPatient } from "../../slices/patientForm/loadPatient.js";
 import PatientForm from "./PatientForm.js";
 import Pagination from "react-bootstrap/Pagination";
 import { PAGE_SIZE } from "../../api/apiConfig.js";
 import calculateAge from "../../utils.js";
+import { RiEdit2Line } from "react-icons/ri";
+import "./Patients.css";
 
-const Patients = () => {
+const PatientsList = () => {
   const currentPage = useSelector((state) => state.patients.currentPage);
   const dispatch = useDispatch();
   const patients = useSelector((state) => state.patients.patients);
   const totalPages = useSelector((state) => state.patients.totalPages);
   const showForm = useSelector((state) => state.patientForm.showForm);
-  // const [active, setActive] = useState(1);
 
   useEffect(() => {
     dispatch(fetchPatients(currentPage, dispatch));
@@ -33,26 +34,38 @@ const Patients = () => {
             <thead>
               <tr>
                 <th>#</th>
-                <th>
-                  Patient information{" "}
-                  <Button onClick={() => dispatch(openForm())}>Add new</Button>
+                <th colspan="2">
+                  <Button
+                    className="my-button"
+                    onClick={() => dispatch(openForm())}
+                  >
+                    Add new
+                  </Button>
                 </th>
               </tr>
             </thead>
             <tbody>
               {patients.map((patient, index) => (
-                <tr
-                  key={patient.id}
-                  onDoubleClick={() => {
-                    dispatch(loadPatient(patient.id));
-                    dispatch(openForm());
-                  }}
-                >
+                <tr key={patient.id}>
                   <td>{(currentPage - 1) * PAGE_SIZE + index + 1}</td>
-                  <td>
+                  <td
+                    className="patient-profile"
+                    onClick={() => {
+                      dispatch(loadPatient(patient.id));
+                    }}
+                  >
                     {patient.first_name} {patient.middle_name}{" "}
                     {patient.last_name} ({patient.sex}),{" "}
                     {calculateAge(patient.date_of_birth)}
+                  </td>
+                  <td
+                    className="patient-profile"
+                    onClick={() => {
+                      dispatch(loadPatient(patient.id));
+                      dispatch(openForm());
+                    }}
+                  >
+                    <RiEdit2Line />
                   </td>
                 </tr>
               ))}
@@ -124,4 +137,4 @@ const Patients = () => {
   );
 };
 
-export default Patients;
+export default PatientsList;

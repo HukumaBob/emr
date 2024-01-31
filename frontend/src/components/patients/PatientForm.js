@@ -95,25 +95,29 @@ const PatientForm = () => {
     }
   };
 
+  const deletePatientData = () => {
+    dispatchRedux(deletePhotoPatient(patient.id, dispatch))
+      .then(() => {
+        dispatchRedux(deletePatient(patient.id, dispatch))
+          .then(() => {
+            dispatchRedux(closeForm()); // Закрываем модальное окно после успешного выполнения
+            dispatchRedux(fetchPatients(currentPage, dispatch)); // Запрашиваем данные о пациентах снова
+            dispatch({ type: "reset" }); // Сбрасываем состояние формы
+          })
+          .catch((error) => {
+            console.error("Ошибка при удалении пациента:", error);
+          });
+      })
+      .catch((error) => {
+        console.error("Ошибка при удалении фотографии пациента:", error);
+      });
+  };
+
   const handleDeletePatient = (e) => {
     e.preventDefault();
     if (patientFormStatus === "idle") {
       if (patient.id) {
-        dispatchRedux(deletePhotoPatient(patient.id, dispatch))
-          .then(() => {
-            dispatchRedux(deletePatient(patient.id, dispatch))
-              .then(() => {
-                dispatchRedux(closeForm()); // Закрываем модальное окно после успешного выполнения
-                dispatchRedux(fetchPatients(currentPage, dispatch)); // Запрашиваем данные о пациентах снова
-                dispatch({ type: "reset" }); // Сбрасываем состояние формы
-              })
-              .catch((error) => {
-                console.error("Ошибка при удалении пациента:", error);
-              });
-          })
-          .catch((error) => {
-            console.error("Ошибка при удалении фотографии пациента:", error);
-          });
+        deletePatientData();
       }
     }
   };
@@ -271,7 +275,7 @@ const PatientForm = () => {
           </Form.Group>
           <Form.Group as={Row} className="mb-3 justify-content-md-center">
             <Col sm={6}>
-              <Button variant="primary" type="submit" style={{ width: "100%" }}>
+              <Button variant="primary" type="submit" className="my-button">
                 Submit
               </Button>
             </Col>
@@ -280,7 +284,7 @@ const PatientForm = () => {
                 variant="danger"
                 type="button"
                 onClick={handleDeletePatient}
-                style={{ width: "100%" }}
+                className="my-button"
               >
                 Delete
               </Button>

@@ -1,14 +1,14 @@
-import Dashboard from "../dashboard/Dashboard.js";
-import Patients from "./Patients.js";
+import PatientProfile from "./PatientProfile.js";
+import PatientsList from "./PatientsList.js";
 
 const PatientMainPage = () => {
   return (
     <div className="row">
       <div className="col-lg-3">
-        <Dashboard />
+        <PatientProfile />
       </div>
       <div className="col-lg-3">
-        <Patients />
+        <PatientsList />
       </div>
     </div>
   );
