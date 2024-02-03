@@ -14,11 +14,7 @@ export const fetchPatients = createAsyncThunk(
       const response = await fetch(
         `${BASE_URL}${PATIENTS}?page=${page}&page_size=${PAGE_SIZE}&${filterParams}`
       );
-      console.log(
-        `${BASE_URL}${PATIENTS}?page=${page}&page_size=${PAGE_SIZE}&${filterParams}`
-      );
       const data = await response.json();
-      console.log(data);
       return data;
     } catch (error) {
       return handleError(error, dispatch, rejectWithValue);

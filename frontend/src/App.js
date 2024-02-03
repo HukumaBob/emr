@@ -1,6 +1,7 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useSelector } from "react-redux";
+import ICD from "./components/icd/ICD";
 import Header from "./components/header/Header";
 import Dashboard from "./components/dashboard/Dashboard";
 import PatientMainPage from "./components/patients/PatientMainPage";
@@ -32,6 +33,14 @@ const App = () => {
             element={
               <ProtectedRoute isAuthenticated={isAuthenticated}>
                 <PatientMainPage expand="lg" />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="icd"
+            element={
+              <ProtectedRoute isAuthenticated={isAuthenticated}>
+                <ICD expand="lg" />
               </ProtectedRoute>
             }
           />

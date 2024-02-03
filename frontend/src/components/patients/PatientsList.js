@@ -42,11 +42,7 @@ const PatientsList = () => {
       <ListGroup variant="flush">
         <ListGroup.Item>
           <Form>
-            <Form.Group
-              as={Row}
-              className="mb-1"
-              controlId="formPlaintextEmail"
-            >
+            <Form.Group as={Row} className="mb-1" controlId="nameFilter">
               <Col sm="6">
                 <Form.Control
                   type="text"
@@ -64,17 +60,15 @@ const PatientsList = () => {
                 />
               </Col>
             </Form.Group>
-            {/* <input
-              type="text"
-              name="last_name"
-              placeholder="Last name"
-              // onChange={handleFilterChange}
-            />
-            <input
-              type="date"
-              name="date_of_birth"
-              // onChange={handleFilterChange}
-            /> */}
+            <Form.Group as={Row} className="mb-1" controlId="dateFilter">
+              <Col sm="12">
+                <Form.Control
+                  type="date"
+                  name="date_of_birth"
+                  onChange={handleFilterChange}
+                />
+              </Col>
+            </Form.Group>
           </Form>
           <Table striped bordered hover>
             <thead>
@@ -100,7 +94,7 @@ const PatientsList = () => {
                     }}
                   >
                     {patient.first_name} {patient.middle_name}{" "}
-                    {patient.last_name} ({patient.sex}),{" "}
+                    {patient.last_name} ({patient.gender}),{" "}
                     {calculateAge(patient.date_of_birth)}
                   </td>
                   <td

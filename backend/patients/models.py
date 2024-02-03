@@ -2,18 +2,19 @@ from django.db import models
 
 
 class Patient(models.Model):
-    class Sex(models.TextChoices):
+    class Gender(models.TextChoices):
         MALE = 'M', 'male'
-        FEMALE = 'F', 'female'        
+        FEMALE = 'F', 'female'
+        OTHER = 'O', 'other'
 
     first_name = models.CharField(max_length=100, blank=True, null=True, )
     middle_name = models.CharField(max_length=100, blank=True, null=True, )
     last_name = models.CharField(max_length=100)
     date_of_birth = models.DateField()
-    sex = models.CharField(
+    gender = models.CharField(
         max_length=1,
-        choices=Sex.choices,
-        default=Sex.FEMALE
+        choices=Gender.choices,
+        default=Gender.FEMALE
     )
     photo = models.ImageField(
         upload_to='images/patients_profile/',

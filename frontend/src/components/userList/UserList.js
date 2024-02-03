@@ -35,13 +35,13 @@ const Users = () => {
             <td>
               {user.first_name} {user.middle_name} {user.last_name}
             </td>
-            <td>{patient.date_of_birth}</td>
-            <td>{patient.sex}</td>
-            <td>{patient.address}</td>
-            <td>{patient.phone_number}</td>
-            <td>{patient.email}</td>
-            <td>{patient.created_at}</td>
-            <td>{patient.updated_at}</td>
+            <td>{user.date_of_birth}</td>
+            <td>{user.gender}</td>
+            <td>{user.address}</td>
+            <td>{user.phone_number}</td>
+            <td>{user.email}</td>
+            <td>{user.created_at}</td>
+            <td>{user.updated_at}</td>
           </tr>
         ))}
       </tbody>

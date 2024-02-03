@@ -3,7 +3,7 @@ export const initialPatientState = {
   middle_name: "",
   last_name: "",
   date_of_birth: "",
-  sex: "",
+  gender: "",
   address: "",
   phone_number: "",
   email: "",

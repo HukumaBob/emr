@@ -18,7 +18,7 @@ class Command(BaseCommand):
                 middle_name=fake.first_name(),
                 last_name=fake.last_name(),
                 date_of_birth=fake.date_of_birth(),
-                sex=fake.random_element(elements=('M', 'F')),
+                gender=fake.random_element(elements=('M', 'F')),
                 address=fake.address(),
                 phone_number=fake.phone_number(),
                 email=fake.email(),

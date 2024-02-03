@@ -25,7 +25,7 @@ const PatientProfile = () => {
             <p>First name: {patient.first_name}</p>
             <p>Middle name: {patient.middle_name}</p>
             <p>Last name: {patient.last_name}</p>
-            <p>Sex: {patient.sex}</p>
+            <p>Gender: {patient.gender}</p>
             <p>
               Age: ({patient.date_of_birth})
               {calculateAge(patient.date_of_birth)}

@@ -12,6 +12,7 @@ import {
   RiCalendarLine,
   RiUser3Line,
   RiDashboard3Line,
+  RiStethoscopeLine,
 } from "react-icons/ri";
 import LoginForm from "../login/LoginForm";
 import "./Header.css";
@@ -79,6 +80,10 @@ function Header() {
               <Nav.Link href="setup">
                 <RiSettingsLine size="2em" />
                 System setup
+              </Nav.Link>
+              <Nav.Link href="icd">
+                <RiStethoscopeLine size="2em" />
+                ICD-11
               </Nav.Link>
             </Nav>
 

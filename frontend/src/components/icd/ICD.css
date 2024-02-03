@@ -1,0 +1,16 @@
+.ectComponent {
+  font-family: "Helvetica Neue", "Lucida Grande", "Segoe UI", Arial, Helvetica,
+    Verdana, sans-serif;
+  margin: 0;
+  padding: 0;
+  font-size: 14px;
+  line-height: 1.42857143;
+  color: #acaaaa;
+  /* filter: invert(1); */
+}
+.ctw-eb-window .embeddedBrowserSearchbox {
+  width: 30%;
+  margin-left: 20px;
+  height: 30px;
+  border-radius: 6px;
+}

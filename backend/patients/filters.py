@@ -12,7 +12,7 @@ class PatientFilter(FilterSet):
         lookup_expr='istartswith',
         )
     date_of_birth = filters.DateFilter(
-        field_name='last_name',
+        field_name='date_of_birth',
     )
 
     class Meta:

@@ -217,17 +217,18 @@ const PatientForm = () => {
               />
             </Col>
             <Form.Label column sm={2}>
-              Sex
+              Gender
             </Form.Label>
             <Col sm={4}>
               <Form.Control
                 as="select"
-                name="sex"
-                value={patient.sex}
+                name="gender"
+                value={patient.gender}
                 onChange={handleChange}
               >
                 <option value="M">Male</option>
                 <option value="F">Female</option>
+                <option value="O">Other</option>
               </Form.Control>
             </Col>
           </Form.Group>
