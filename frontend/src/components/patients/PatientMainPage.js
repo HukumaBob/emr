@@ -5,10 +5,10 @@ const PatientMainPage = () => {
   return (
     <div className="row">
       <div className="col-lg-3">
-        <PatientProfile />
+        <PatientsList />
       </div>
       <div className="col-lg-3">
-        <PatientsList />
+        <PatientProfile />
       </div>
     </div>
   );

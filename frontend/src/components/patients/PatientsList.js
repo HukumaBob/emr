@@ -14,7 +14,6 @@ import { loadPatient } from "../../slices/patientForm/loadPatient.js";
 import PatientForm from "./PatientForm.js";
 import Pagination from "react-bootstrap/Pagination";
 import { PAGE_SIZE } from "../../api/apiConfig.js";
-import calculateAge from "../../utils.js";
 import { RiEdit2Line } from "react-icons/ri";
 import "./Patients.css";
 
@@ -94,8 +93,7 @@ const PatientsList = () => {
                     }}
                   >
                     {patient.first_name} {patient.middle_name}{" "}
-                    {patient.last_name} ({patient.gender}),{" "}
-                    {calculateAge(patient.date_of_birth)}
+                    {patient.last_name}, {patient.date_of_birth}
                   </td>
                   <td
                     className="patient-profile"
