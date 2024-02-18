@@ -4,7 +4,6 @@ import { deletePatient } from "./patientForm/deletePatient";
 import { deletePhotoPatient } from "./patientForm/deletePhotoPatient";
 import { updatePatient } from "./patientForm/updatePatient";
 import { loadPatient } from "./patientForm/loadPatient";
-// import reducers from "./patientForm/reducer.js";
 
 const patientFormSlice = createSlice({
   name: "patientForm",

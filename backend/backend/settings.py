@@ -1,5 +1,25 @@
 import os
 from pathlib import Path
+import logging.config
+
+logging.config.fileConfig('logging.conf')
+logger = logging.getLogger('sampleLogger')
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': 'debug.log',
+        },
+    },
+    'root': {
+        'handlers': ['file'],
+        'level': 'DEBUG',
+    }
+}
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
