@@ -1,6 +1,6 @@
 from rest_framework import viewsets
-from .models import Record
-from .serializers import RecordSerializer
+from .models import Record, Template, Schema
+from .serializers import RecordSerializer, TemplateSerializer, SchemaSerializer
 
 
 class RecordViewSet(viewsets.ModelViewSet):
@@ -12,3 +12,13 @@ class RecordViewSet(viewsets.ModelViewSet):
         if patient_id is not None:
             queryset = queryset.filter(patient__id=patient_id)
         return queryset
+
+
+class TemplateViewSet(viewsets.ModelViewSet):
+    queryset = Template.objects.all()
+    serializer_class = TemplateSerializer
+
+
+class SchemaViewSet(viewsets.ModelViewSet):
+    queryset = Schema.objects.all()
+    serializer_class = SchemaSerializer

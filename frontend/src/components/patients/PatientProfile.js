@@ -57,7 +57,7 @@ const PatientProfile = () => {
                     key={record.id}
                     onClick={() => dispatch(loadRecord(record.id))}
                   >
-                    <td colSpan="2">{record.record_type.name.short_name}</td>
+                    <td colSpan="2">{record.record_type_name.name}</td>
                     <td colSpan="1">
                       {new Date(record.created_at).toLocaleDateString()}
                     </td>

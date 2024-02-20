@@ -1,5 +1,5 @@
 export const initialRecordState = {
-  record_type: "",
+  record_type: { name: { short_name: "jjj" } },
   findings: "",
   diagnosis: "",
   recommendations: "",

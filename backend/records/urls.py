@@ -1,13 +1,15 @@
 from django.urls import include, path
 from rest_framework import routers
 
-from records.views import RecordViewSet
+from records.views import RecordViewSet, TemplateViewSet, SchemaViewSet
 
 app_name = 'records'
 
 router_v1 = routers.DefaultRouter()
 
 router_v1.register('records', RecordViewSet, basename='records')
+router_v1.register('templates', TemplateViewSet, basename='templates')
+router_v1.register('schemas', SchemaViewSet, basename='schemas')
 
 urlpatterns = [
     path('', include(router_v1.urls)),
