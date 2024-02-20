@@ -25,9 +25,21 @@ const PatientRecord = () => {
   const { findings } = record;
 
   const renderFields = (fields, level = 0) => {
+    if (typeof fields === "string" && fields.trim() !== "") {
+      return <div style={{ marginLeft: `${level * 20}px` }}>{fields}</div>;
+    }
+
     return Object.keys(fields).map((field) => {
       let value = fields[field];
-      if (typeof value === "object" && value !== null) {
+      if (typeof value === "string") {
+        return (
+          <div key={field} style={{ marginLeft: `${level * 20}px` }}>
+            <b>{field.replace(/_/g, " ")}:</b> {value.replace(/_/g, " ")}
+          </div>
+        );
+      } else if (Array.isArray(value) && value.length === 0) {
+        return null;
+      } else if (typeof value === "object" && value !== null) {
         const childFields = renderFields(value, level + 1);
         if (childFields.length > 0) {
           return (
@@ -37,16 +49,6 @@ const PatientRecord = () => {
             </div>
           );
         }
-      } else if (
-        value !== false &&
-        value !== "" &&
-        !(Array.isArray(value) && value.length === 0)
-      ) {
-        return (
-          <div key={field} style={{ marginLeft: `${level * 20}px` }}>
-            <b>{field.replace(/_/g, " ")}:</b> {value.toString()}
-          </div>
-        );
       }
       return null;
     });
