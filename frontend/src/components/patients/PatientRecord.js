@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import "./Patients.css";
 
 const PatientRecord = () => {
-  const record = useSelector((state) => state.recordForm.patient);
+  const record = useSelector((state) => state.recordForm.record);
 
   if (!record) {
     return (

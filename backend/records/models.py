@@ -65,6 +65,10 @@ class Record(models.Model):
     findings = models.JSONField(default=dict)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    findings_schema = models.ForeignKey(
+        Schema, on_delete=models.SET_NULL,
+        null=True, blank=True, related_name='+'
+        )
 
     def __str__(self):
         return f'Record #{self.id} - Patient: {self.patient}'

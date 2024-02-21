@@ -7,16 +7,16 @@ import { loadRecord } from "./recordForm/loadRecord";
 
 const recordFormSlice = createSlice({
   name: "recordForm",
-  initialState: { status: "idle", error: null, showForm: false, patient: null },
+  initialState: { status: "idle", error: null, showForm: false, record: null },
   reducers: {
     openForm: (state) => {
       state.showForm = true;
-      state.patient = null;
+      state.record = null;
     },
     closeForm: (state) => {
       state.showForm = false;
       state.status = "idle";
-      state.patient = null;
+      state.record = null;
     },
   },
   extraReducers: (builder) => {
@@ -31,7 +31,7 @@ const recordFormSlice = createSlice({
       state.error = action.error.message;
     });
     builder.addCase(loadRecord.fulfilled, (state, action) => {
-      state.patient = action.payload;
+      state.record = action.payload;
     });
     builder.addCase(updateRecord.fulfilled, (state, action) => {
       state.status = "succeeded";
@@ -47,5 +47,5 @@ const recordFormSlice = createSlice({
 });
 
 export const { openForm, closeForm } = recordFormSlice.actions;
-export const status = (state) => state.patientForm.status;
+export const status = (state) => state.recordForm.status;
 export default recordFormSlice.reducer;

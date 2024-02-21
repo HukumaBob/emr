@@ -33,8 +33,7 @@ const PatientProfile = () => {
   return (
     <Card className="card-height">
       <Card.Img variant="top" src={patient.photo} />
-      <Card.Body>
-        <Card.Title>Patient profile</Card.Title>
+      <Card.Body className="card-content">
         <ListGroup variant="flush">
           <ListGroup.Item className="m-1">
             <Card.Subtitle className="text-muted">
@@ -52,11 +51,22 @@ const PatientProfile = () => {
               {calculateAge(patient.date_of_birth)}
             </Card.Text>
           </ListGroup.Item>
-          <ListGroup.Item className="card-content">
+          <ListGroup.Item>
+            <Card.Subtitle className="text-muted">
+              Medical information:
+            </Card.Subtitle>
             <Table striped bordered hover>
               <thead>
                 <tr>
-                  <th colSpan="3">Medical information:</th>
+                  <th colSpan="3">
+                    {" "}
+                    <Button
+                      className="my-button"
+                      // onClick={() => dispatch(openForm())}
+                    >
+                      Add new record
+                    </Button>
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -76,7 +86,7 @@ const PatientProfile = () => {
             </Table>
           </ListGroup.Item>
         </ListGroup>
-        <Button variant="primary">Go somewhere</Button>
+        {/* <Button variant="primary">Go somewhere</Button> */}
       </Card.Body>
     </Card>
   );

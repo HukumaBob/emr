@@ -36,7 +36,10 @@ class RecordSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Record
-        fields = ['id', 'patient_name', 'specialist_name', 'record_type_name', 'findings', 'created_at', 'updated_at']  
+        fields = [
+            'id', 'patient_name', 'specialist_name','record_type_name',
+            'findings', 'created_at', 'updated_at', 'findings_schema'
+            ]
 
 
 class TemplateSerializer(serializers.ModelSerializer):

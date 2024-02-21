@@ -1,11 +1,9 @@
 export const initialRecordState = {
-  record_type: { name: { short_name: "jjj" } },
-  findings: "",
-  diagnosis: "",
-  recommendations: "",
+  record_type_name: "",
+  findings: [],
 };
 
-export function patientReducer(state, action) {
+export function recordReducer(state, action) {
   switch (action.type) {
     case "field": {
       return {
