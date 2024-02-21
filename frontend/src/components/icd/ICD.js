@@ -11,8 +11,8 @@ const ICD = () => {
   };
   ECT.Handler.configure(mySettings);
   return (
-    <Card className="m-1">
-      <Card.Body>
+    <Card className="m-1 card-height">
+      <Card.Body className="card-content">
         <Card.Title>ICD-11</Card.Title>
         <div
           className="ctw-eb-window my-custom-background"

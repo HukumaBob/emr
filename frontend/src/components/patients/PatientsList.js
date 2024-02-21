@@ -37,8 +37,8 @@ const PatientsList = () => {
   }, [dispatch, currentPage, filters]);
 
   return (
-    <Card>
-      <ListGroup variant="flush">
+    <Card className="card-height">
+      <ListGroup variant="flush" className="card-content">
         <ListGroup.Item>
           <Form>
             <Form.Group as={Row} className="mb-1" controlId="nameFilter">

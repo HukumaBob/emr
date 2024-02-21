@@ -7,6 +7,7 @@ import { useEffect } from "react";
 import calculateAge from "../../utils";
 import { fetchRecords } from "../../slices/recordsSlice";
 import { loadRecord } from "../../slices/recordForm/loadRecord";
+import "./Patients.css";
 
 const PatientProfile = () => {
   const dispatch = useDispatch();
@@ -19,11 +20,18 @@ const PatientProfile = () => {
   }, [patient, dispatch]);
 
   if (!patient) {
-    return <div>Пациент не выбран</div>;
+    return (
+      <Card className="card-height">
+        <Card.Header>
+          <Card.Title>Пациент не выбран</Card.Title>
+        </Card.Header>
+        <Card.Body className="card-content"></Card.Body>
+      </Card>
+    );
   }
 
   return (
-    <Card>
+    <Card className="card-height">
       <Card.Img variant="top" src={patient.photo} />
       <Card.Body>
         <Card.Title>Patient profile</Card.Title>
@@ -44,7 +52,7 @@ const PatientProfile = () => {
               {calculateAge(patient.date_of_birth)}
             </Card.Text>
           </ListGroup.Item>
-          <ListGroup.Item>
+          <ListGroup.Item className="card-content">
             <Table striped bordered hover>
               <thead>
                 <tr>
@@ -56,6 +64,7 @@ const PatientProfile = () => {
                   <tr
                     key={record.id}
                     onClick={() => dispatch(loadRecord(record.id))}
+                    className="patient-profile"
                   >
                     <td colSpan="2">{record.record_type_name.name}</td>
                     <td colSpan="1">

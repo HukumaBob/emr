@@ -1,3 +1,9 @@
+.card-height {
+  height: 92vh;
+}
+.card-content {
+  overflow-y: auto;
+}
 .ectComponent {
   font-family: "Helvetica Neue", "Lucida Grande", "Segoe UI", Arial, Helvetica,
     Verdana, sans-serif;

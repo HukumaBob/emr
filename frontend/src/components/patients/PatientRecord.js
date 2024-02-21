@@ -1,25 +1,19 @@
 import Card from "react-bootstrap/Card";
-import Table from "react-bootstrap/Table";
-import ListGroup from "react-bootstrap/esm/ListGroup";
-import { useSelector, useDispatch } from "react-redux";
-import { useEffect, useState } from "react";
-import { initialRecordState } from "../../slices/recordForm/patientReducer";
-import { loadRecord } from "../../slices/recordForm/loadRecord";
+import { useSelector } from "react-redux";
+import "./Patients.css";
 
 const PatientRecord = () => {
-  // const dispatch = useDispatch();
   const record = useSelector((state) => state.recordForm.patient);
-  // const [lastRecordId, setLastRecordId] = useState(null);
-
-  // useEffect(() => {
-  //   if (record && record.id !== lastRecordId) {
-  //     dispatch(loadRecord(record.id));
-  //     setLastRecordId(record.id);
-  //   }
-  // }, [record, dispatch, lastRecordId]);
 
   if (!record) {
-    return <div>Запись не выбрана</div>;
+    return (
+      <Card className="card-height">
+        <Card.Header>
+          <Card.Title>Запись не выбрана</Card.Title>
+        </Card.Header>
+        <Card.Body className="card-content"></Card.Body>
+      </Card>
+    );
   }
 
   const { findings } = record;
@@ -35,6 +29,12 @@ const PatientRecord = () => {
         return (
           <div key={field} style={{ marginLeft: `${level * 20}px` }}>
             <b>{field.replace(/_/g, " ")}:</b> {value.replace(/_/g, " ")}
+          </div>
+        );
+      } else if (typeof value === "number") {
+        return (
+          <div key={field} style={{ marginLeft: `${level * 20}px` }}>
+            <b>{field.replace(/_/g, " ")}:</b> {value}
           </div>
         );
       } else if (Array.isArray(value) && value.length === 0) {
@@ -68,11 +68,11 @@ const PatientRecord = () => {
   };
 
   return (
-    <Card>
+    <Card className="card-height">
       <Card.Header>
         <Card.Title>{record.record_type_name.name}</Card.Title>
       </Card.Header>
-      <Card.Body>{renderFindings(findings)}</Card.Body>
+      <Card.Body className="card-content">{renderFindings(findings)}</Card.Body>
     </Card>
   );
 };
