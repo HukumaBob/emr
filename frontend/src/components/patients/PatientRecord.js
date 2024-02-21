@@ -7,16 +7,16 @@ import { initialRecordState } from "../../slices/recordForm/patientReducer";
 import { loadRecord } from "../../slices/recordForm/loadRecord";
 
 const PatientRecord = () => {
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
   const record = useSelector((state) => state.recordForm.patient);
-  const [lastRecordId, setLastRecordId] = useState(null);
+  // const [lastRecordId, setLastRecordId] = useState(null);
 
-  useEffect(() => {
-    if (record && record.id !== lastRecordId) {
-      dispatch(loadRecord(record.id));
-      setLastRecordId(record.id);
-    }
-  }, [record, dispatch, lastRecordId]);
+  // useEffect(() => {
+  //   if (record && record.id !== lastRecordId) {
+  //     dispatch(loadRecord(record.id));
+  //     setLastRecordId(record.id);
+  //   }
+  // }, [record, dispatch, lastRecordId]);
 
   if (!record) {
     return <div>Запись не выбрана</div>;
@@ -31,7 +31,7 @@ const PatientRecord = () => {
 
     return Object.keys(fields).map((field) => {
       let value = fields[field];
-      if (typeof value === "string") {
+      if (typeof value === "string" && value.trim() !== "") {
         return (
           <div key={field} style={{ marginLeft: `${level * 20}px` }}>
             <b>{field.replace(/_/g, " ")}:</b> {value.replace(/_/g, " ")}
@@ -41,7 +41,7 @@ const PatientRecord = () => {
         return null;
       } else if (typeof value === "object" && value !== null) {
         const childFields = renderFields(value, level + 1);
-        if (childFields.length > 0) {
+        if (childFields.filter((child) => child !== null).length > 0) {
           return (
             <div key={field} style={{ marginLeft: `${level * 20}px` }}>
               <b>{field.replace(/_/g, " ")}</b>
