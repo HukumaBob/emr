@@ -1,6 +1,9 @@
 from rest_framework import viewsets
 from .models import Record, Template, Schema
-from .serializers import RecordSerializer, TemplateSerializer, SchemaSerializer
+from .serializers import (
+    RecordSerializer, TemplateSerializer,
+    SchemaListSerializer, SchemaDetailSerializer
+    )
 
 
 class RecordViewSet(viewsets.ModelViewSet):
@@ -21,4 +24,8 @@ class TemplateViewSet(viewsets.ModelViewSet):
 
 class SchemaViewSet(viewsets.ModelViewSet):
     queryset = Schema.objects.all()
-    serializer_class = SchemaSerializer
+
+    def get_serializer_class(self):
+        if self.action == 'list':
+            return SchemaListSerializer
+        return SchemaDetailSerializer

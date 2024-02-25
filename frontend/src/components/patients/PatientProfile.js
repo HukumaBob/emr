@@ -1,23 +1,37 @@
-import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import Table from "react-bootstrap/Table";
 import ListGroup from "react-bootstrap/esm/ListGroup";
+import Dropdown from "react-bootstrap/Dropdown";
+import Modal from "react-bootstrap/Modal";
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect } from "react";
 import calculateAge from "../../utils";
 import { fetchRecords } from "../../slices/recordsSlice";
 import { loadRecord } from "../../slices/recordForm/loadRecord";
+import {
+  openSchemaForm,
+  closeSchemaForm,
+} from "../../slices/schema/schemaReducer";
+import { fetchSchemas } from "../../slices/schema/fetchSchemas";
+import { loadSchema } from "../../slices/schema/loadSchema";
+import ModalRecordForm from "../records/ModalRecordForm";
 import "./Patients.css";
 
 const PatientProfile = () => {
   const dispatch = useDispatch();
+  const schemas = useSelector((state) => state.schema.schemas);
   const patient = useSelector((state) => state.patientForm.patient);
   const records = useSelector((state) => state.records.records);
+  const showForm = useSelector((state) => state.schema.formOpen);
   useEffect(() => {
     if (patient) {
       dispatch(fetchRecords({ page: 1, patient_id: patient.id }));
     }
   }, [patient, dispatch]);
+
+  useEffect(() => {
+    dispatch(fetchSchemas({ page: 1 }));
+  }, []);
 
   if (!patient) {
     return (
@@ -59,13 +73,26 @@ const PatientProfile = () => {
               <thead>
                 <tr>
                   <th colSpan="3">
-                    {" "}
-                    <Button
-                      className="my-button"
-                      // onClick={() => dispatch(openForm())}
-                    >
-                      Add new record
-                    </Button>
+                    <Dropdown>
+                      <Dropdown.Toggle
+                        variant="primary"
+                        id="dropdown-basic"
+                        // split
+                        className="my-button"
+                      >
+                        Add record
+                      </Dropdown.Toggle>
+                      <Dropdown.Menu>
+                        {schemas.map((schema) => (
+                          <Dropdown.Item
+                            key={schema.id}
+                            onClick={() => dispatch(loadSchema(schema.id))}
+                          >
+                            {schema.name}
+                          </Dropdown.Item>
+                        ))}
+                      </Dropdown.Menu>
+                    </Dropdown>
                   </th>
                 </tr>
               </thead>
@@ -86,7 +113,14 @@ const PatientProfile = () => {
             </Table>
           </ListGroup.Item>
         </ListGroup>
-        {/* <Button variant="primary">Go somewhere</Button> */}
+        <Modal show={showForm} onHide={() => dispatch(closeSchemaForm())}>
+          <Modal.Header closeButton>
+            <Modal.Title>Create new record</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <ModalRecordForm />
+          </Modal.Body>
+        </Modal>
       </Card.Body>
     </Card>
   );

@@ -17,283 +17,79 @@ import {
   recordReducer,
 } from "../../slices/recordForm/recordReducer";
 
-const PatientForm = () => {
-  const [record, dispatch] = useReducer(patientReducer, initialPatientState);
-  const fileInput = useRef();
-  const dispatchRedux = useDispatch();
-  const recordFormStatus = useSelector((state) => state.recordForm.status);
-  const loadedRecord = useSelector((state) => state.recordForm.record);
+const RecordForm = () => {
+  const record = useSelector((state) => state.recordForm.record);
 
-  useEffect(() => {
-    if (loadedRecord) {
-      dispatch({ type: "load", payload: loadedRecord });
+  if (!record) {
+    return (
+      <Card className="card-height">
+        <Card.Header>
+          <Card.Title>Запись не выбрана</Card.Title>
+        </Card.Header>
+        <Card.Body className="card-content"></Card.Body>
+      </Card>
+    );
+  }
+
+  const { findings } = record;
+
+  const renderFields = (fields, level = 0) => {
+    if (typeof fields === "string" && fields.trim() !== "") {
+      return <div style={{ marginLeft: `${level * 20}px` }}>{fields}</div>;
     }
-  }, [loadedRecord, dispatch]);
 
-  const [selectedImage, setSelectedImage] = useState(null);
-
-  const handleFileChange = (e) => {
-    dispatch({
-      type: "field",
-      fieldName: e.target.name,
-      payload: e.target.files[0],
-    });
-    setSelectedImage(URL.createObjectURL(e.target.files[0]));
-  };
-
-  const handleChange = (e) => {
-    dispatch({
-      type: "field",
-      fieldName: e.target.name,
-      payload: e.target.value,
-    });
-  };
-
-  const currentPage = useSelector((state) => state.patients.currentPage);
-
-  const createPatientData = () => {
-    dispatchRedux(createRecord(patient, dispatch))
-      .then(() => {
-        dispatchRedux(closeForm()); // Закрываем модальное окно после успешного выполнения
-        dispatchRedux(fetchRecords(1, dispatch)); // Запрашиваем данные о пациентах снова
-        dispatch({ type: "reset" }); // Сбрасываем состояние формы
-      })
-      .catch((error) => {
-        console.error("Ошибка при создании пациента:", error);
-      });
-  };
-  const updatePatientData = () => {
-    dispatchRedux(
-      updateRecord({ ...patient, fileInput, fieldName: "photo" }, dispatch)
-    )
-      .then(() => {
-        dispatchRedux(closeForm()); // Закрываем модальное окно после успешного выполнения
-        dispatchRedux(fetchRecords(currentPage, dispatch)); // Запрашиваем данные о пациентах снова
-        dispatch({ type: "reset" }); // Сбрасываем состояние формы
-      })
-      .catch(handleError);
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (patientFormStatus === "idle") {
-      if (patient.id) {
-        if (patient.photo && fileInput.current.files[0]) {
-          dispatchRedux(deletePhotoRecord(patient.id))
-            .then(() => {
-              // После успешного удаления фото обновляем пациента
-              updatePatientData();
-            })
-            .catch(handleError);
-        } else {
-          updatePatientData();
+    return Object.keys(fields).map((field) => {
+      let value = fields[field];
+      if (typeof value === "string" && value.trim() !== "") {
+        return (
+          <div key={field} style={{ marginLeft: `${level * 20}px` }}>
+            <b>{field.replace(/_/g, " ")}:</b> {value.replace(/_/g, " ")}
+          </div>
+        );
+      } else if (typeof value === "number") {
+        return (
+          <div key={field} style={{ marginLeft: `${level * 20}px` }}>
+            <b>{field.replace(/_/g, " ")}:</b> {value}
+          </div>
+        );
+      } else if (Array.isArray(value) && value.length === 0) {
+        return null;
+      } else if (typeof value === "object" && value !== null) {
+        const childFields = renderFields(value, level + 1);
+        if (childFields.filter((child) => child !== null).length > 0) {
+          return (
+            <div key={field} style={{ marginLeft: `${level * 20}px` }}>
+              <b>{field.replace(/_/g, " ")}</b>
+              {childFields}
+            </div>
+          );
         }
-      } else {
-        createPatientData();
       }
-    }
+      return null;
+    });
   };
 
-  const deletePatientData = () => {
-    dispatchRedux(deletePhotoRecord(patient.id, dispatch))
-      .then(() => {
-        dispatchRedux(deleteRecord(patient.id, dispatch))
-          .then(() => {
-            dispatchRedux(closeForm()); // Закрываем модальное окно после успешного выполнения
-            dispatchRedux(fetchRecords(currentPage, dispatch)); // Запрашиваем данные о пациентах снова
-            dispatch({ type: "reset" }); // Сбрасываем состояние формы
-          })
-          .catch((error) => {
-            console.error("Ошибка при удалении пациента:", error);
-          });
-      })
-      .catch((error) => {
-        console.error("Ошибка при удалении фотографии пациента:", error);
-      });
-  };
-
-  const handleDeletePatient = (e) => {
-    e.preventDefault();
-    if (patientFormStatus === "idle") {
-      if (patient.id) {
-        deletePatientData();
-      }
-    }
-  };
-
-  useEffect(() => {
-    dispatchRedux(fetchRecords(currentPage, dispatch));
-  }, [currentPage, dispatchRedux]);
-
-  const handleError = (error) => {
-    console.error("Ошибка при обновлении/создании пациента:", error);
+  const renderFindings = (findings) => {
+    const sections = Object.keys(findings);
+    return sections.map((section) => {
+      const fields = findings[section];
+      return (
+        <Card key={section}>
+          <Card.Header>{section.replace(/_/g, " ")}</Card.Header>
+          <Card.Body>{renderFields(fields)}</Card.Body>
+        </Card>
+      );
+    });
   };
 
   return (
-    <Card bg="dark" data-bs-theme="dark">
-      <Card.Body>
-        <Form onSubmit={handleSubmit}>
-          <Form.Group as={Row} className="mb-3">
-            <Form.Label column sm={2}>
-              Photo
-            </Form.Label>
-            <Col sm={9}>
-              <Form.Control
-                type="file"
-                name="photo"
-                ref={fileInput}
-                onChange={handleFileChange}
-              />
-            </Col>
-            <Col sm={1} className="me-auto d-flex justify-content-center">
-              {selectedImage ? (
-                <Card.Img
-                  src={selectedImage}
-                  className="align-self-center my-thumbnail"
-                />
-              ) : loadedPatient?.photo ? (
-                <Card.Img
-                  src={loadedPatient.photo}
-                  className="align-self-center my-thumbnail"
-                />
-              ) : (
-                <></>
-              )}
-            </Col>
-          </Form.Group>
-          <Form.Group as={Row} className="mb-3">
-            <Form.Label column sm={3}>
-              First name
-            </Form.Label>
-            <Col sm={9}>
-              <Form.Control
-                type="text"
-                name="first_name"
-                value={patient.first_name}
-                onChange={handleChange}
-              />
-            </Col>
-          </Form.Group>
-
-          <Form.Group as={Row} className="mb-3">
-            <Form.Label column sm={3}>
-              Mid name
-            </Form.Label>
-            <Col sm={9}>
-              <Form.Control
-                type="text"
-                name="middle_name"
-                value={patient.middle_name}
-                onChange={handleChange}
-              />
-            </Col>
-          </Form.Group>
-
-          <Form.Group as={Row} className="mb-3">
-            <Form.Label column sm={3}>
-              Last name
-            </Form.Label>
-            <Col sm={9}>
-              <Form.Control
-                type="text"
-                name="last_name"
-                value={patient.last_name}
-                onChange={handleChange}
-              />
-            </Col>
-          </Form.Group>
-
-          <Form.Group as={Row} className="mb-3">
-            <Form.Label column sm={2}>
-              DoB
-            </Form.Label>
-            <Col sm={4}>
-              <Form.Control
-                type="date"
-                name="date_of_birth"
-                value={patient.date_of_birth}
-                onChange={handleChange}
-              />
-            </Col>
-            <Form.Label column sm={2}>
-              Gender
-            </Form.Label>
-            <Col sm={4}>
-              <Form.Control
-                as="select"
-                name="gender"
-                value={patient.gender}
-                onChange={handleChange}
-              >
-                <option value="M">Male</option>
-                <option value="F">Female</option>
-                <option value="O">Other</option>
-              </Form.Control>
-            </Col>
-          </Form.Group>
-
-          <Form.Group as={Row} className="mb-3">
-            <Form.Label column sm={3}>
-              Address
-            </Form.Label>
-            <Col sm={9}>
-              <Form.Control
-                type="text"
-                name="address"
-                value={patient.address}
-                onChange={handleChange}
-              />
-            </Col>
-          </Form.Group>
-
-          <Form.Group as={Row} className="mb-3">
-            <Form.Label column sm={4}>
-              Phone number
-            </Form.Label>
-            <Col sm={8}>
-              <Form.Control
-                type="tel"
-                name="phone_number"
-                value={patient.phone_number}
-                onChange={handleChange}
-              />
-            </Col>
-          </Form.Group>
-
-          <Form.Group as={Row} className="mb-3">
-            <Form.Label column sm={4}>
-              Email
-            </Form.Label>
-            <Col sm={8}>
-              <Form.Control
-                type="email"
-                name="email"
-                value={patient.email}
-                onChange={handleChange}
-              />
-            </Col>
-          </Form.Group>
-          <Form.Group as={Row} className="mb-3 justify-content-md-center">
-            <Col sm={6}>
-              <Button variant="primary" type="submit" className="my-button">
-                Submit
-              </Button>
-            </Col>
-            <Col sm={6}>
-              <Button
-                variant="danger"
-                type="button"
-                onClick={handleDeletePatient}
-                className="my-button"
-              >
-                Delete
-              </Button>
-            </Col>
-          </Form.Group>
-        </Form>
-      </Card.Body>
+    <Card className="card-height">
+      <Card.Header>
+        <Card.Title>{record.record_type_name.name}</Card.Title>
+      </Card.Header>
+      <Card.Body className="card-content">{renderFindings(findings)}</Card.Body>
     </Card>
   );
 };
 
-export default PatientForm;
+export default RecordForm;

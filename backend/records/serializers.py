@@ -47,7 +47,13 @@ class TemplateSerializer(serializers.ModelSerializer):
         model = Template
         fields = '__all__'
 
-class SchemaSerializer(serializers.ModelSerializer):
+
+class SchemaListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Schema
+        fields = ['id', 'name']
+
+class SchemaDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Schema
         fields = '__all__'

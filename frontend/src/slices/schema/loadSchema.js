@@ -1,9 +1,10 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { apiRequest } from "../../api/apiRequest";
 import { BASE_URL, SCHEMAS } from "../../api/apiConfig";
+import { openSchemaForm } from "./schemaReducer";
 
-export const loadRecord = createAsyncThunk(
-  "recordForm/loadRecord",
+export const loadSchema = createAsyncThunk(
+  "schema/loadSchema",
   async (schemadId, { dispatch, rejectWithValue }) => {
     const response = await apiRequest(
       "get",
@@ -11,6 +12,9 @@ export const loadRecord = createAsyncThunk(
       schemadId,
       { dispatch, rejectWithValue }
     );
+    if (response) {
+      dispatch(openSchemaForm(response));
+    }
     return response;
   }
 );
