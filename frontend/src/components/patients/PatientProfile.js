@@ -8,10 +8,7 @@ import { useEffect } from "react";
 import calculateAge from "../../utils";
 import { fetchRecords } from "../../slices/recordsSlice";
 import { loadRecord } from "../../slices/recordForm/loadRecord";
-import {
-  openSchemaForm,
-  closeSchemaForm,
-} from "../../slices/schema/schemaReducer";
+import { closeSchemaForm } from "../../slices/schema/schemaReducer";
 import { fetchSchemas } from "../../slices/schema/fetchSchemas";
 import { loadSchema } from "../../slices/schema/loadSchema";
 import ModalRecordForm from "../records/ModalRecordForm";
@@ -31,7 +28,7 @@ const PatientProfile = () => {
 
   useEffect(() => {
     dispatch(fetchSchemas({ page: 1 }));
-  }, []);
+  }, [dispatch]);
 
   if (!patient) {
     return (
@@ -113,11 +110,15 @@ const PatientProfile = () => {
             </Table>
           </ListGroup.Item>
         </ListGroup>
-        <Modal show={showForm} onHide={() => dispatch(closeSchemaForm())}>
-          <Modal.Header closeButton>
+        <Modal
+          fullscreen={true}
+          show={showForm}
+          onHide={() => dispatch(closeSchemaForm())}
+        >
+          <Modal.Header closeButton style={{ backgroundColor: "SlateGrey" }}>
             <Modal.Title>Create new record</Modal.Title>
           </Modal.Header>
-          <Modal.Body>
+          <Modal.Body style={{ backgroundColor: "SlateGrey" }}>
             <ModalRecordForm />
           </Modal.Body>
         </Modal>
