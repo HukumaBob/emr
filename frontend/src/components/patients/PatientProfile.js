@@ -85,7 +85,7 @@ const PatientProfile = () => {
                             key={schema.id}
                             onClick={() => dispatch(loadSchema(schema.id))}
                           >
-                            {schema.name}
+                            {/* {schema.name} */}
                           </Dropdown.Item>
                         ))}
                       </Dropdown.Menu>
@@ -112,11 +112,13 @@ const PatientProfile = () => {
         </ListGroup>
         <Modal
           fullscreen={true}
+          // size="md"
           show={showForm}
           onHide={() => dispatch(closeSchemaForm())}
         >
           <Modal.Header closeButton style={{ backgroundColor: "SlateGrey" }}>
-            <Modal.Title>Create new record</Modal.Title>
+            <Modal.Title id="modal-title">new record:</Modal.Title>
+            <span>{schemas.name}</span>
           </Modal.Header>
           <Modal.Body style={{ backgroundColor: "SlateGrey" }}>
             <ModalRecordForm />

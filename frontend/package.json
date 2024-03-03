@@ -3,9 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@material-ui/core": "^4.12.4",
+    "@emotion/react": "^11.11.4",
+    "@emotion/styled": "^11.11.0",
     "@material-ui/icons": "^4.11.3",
+    "@mui/material": "^5.15.11",
     "@reduxjs/toolkit": "^2.0.1",
+    "@rjsf/bootstrap-4": "^5.17.1",
     "@rjsf/core": "^5.17.1",
     "@rjsf/material-ui": "^5.17.1",
     "@rjsf/utils": "^5.17.1",
