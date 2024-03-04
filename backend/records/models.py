@@ -4,32 +4,45 @@ from patients.models import Patient
 from organization.models import Department
 from users.models import Profile
 from jsonschema import validate, ValidationError
+from pytils.translit import slugify
 
 logger = logging.getLogger(__name__)
 
 
-class RecordType(models.Model):
-    name = models.CharField(max_length=255)
-    department = models.ForeignKey(
-        Department, on_delete=models.CASCADE, null=True, blank=True
-        )
+# class RecordType(models.Model):
+#     name = models.CharField(max_length=255)
+#     department = models.ForeignKey(
+#         Department, on_delete=models.CASCADE, null=True, blank=True
+#         )
 
-    def __str__(self):
-        return self.name
+#     def __str__(self):
+#         return self.name
+
 
 class Schema(models.Model):
     name = models.CharField(max_length=255)
+    name_slug = models.SlugField(
+        max_length=255, unique=True, null=True, blank=True
+        )
+    department = models.ForeignKey(
+        Department, on_delete=models.CASCADE, null=True, blank=True
+        )
     schema = models.JSONField(default=dict)
     ui_schema = models.JSONField(default=dict, null=True, blank=True)
 
+    def save(self, *args, **kwargs):
+        if not self.name_slug:
+            self.name_slug = slugify(self.name)
+        super().save(*args, **kwargs)    
+
     def __str__(self):
-        return self.name
+        return str(self.name)
 
 
 class AbstractRecord(models.Model):
-    record_type = models.ForeignKey(
-        RecordType, on_delete=models.CASCADE, null=True, blank=True
-        )
+    # record_type = models.ForeignKey(
+    #     RecordType, on_delete=models.CASCADE, null=True, blank=True
+    #     )
     findings = models.JSONField(default=dict)
     findings_schema = models.ForeignKey(
         Schema, on_delete=models.SET_NULL,
@@ -60,9 +73,9 @@ class Record(models.Model):
     specialist = models.ForeignKey(
         Profile, on_delete=models.CASCADE, null=True, blank=True
         )
-    record_type = models.ForeignKey(
-        RecordType, on_delete=models.CASCADE, null=True, blank=True
-        )
+    # record_type = models.ForeignKey(
+    #     RecordType, on_delete=models.CASCADE, null=True, blank=True
+    #     )
     findings = models.JSONField(default=dict)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -70,6 +83,7 @@ class Record(models.Model):
         Schema, on_delete=models.SET_NULL,
         null=True, blank=True, related_name='+'
         )
+    is_template = models.BooleanField(default=False)
 
     def __str__(self):
         return f'Record #{self.id} - Patient: {self.patient}'

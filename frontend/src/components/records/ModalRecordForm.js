@@ -4,8 +4,58 @@ import { Button } from "react-bootstrap";
 import { useSelector } from "react-redux";
 import validator from "@rjsf/validator-ajv8";
 import Form from "@rjsf/bootstrap-4";
-// import Form from "@rjsf/material-ui";
 
+const formData = {
+  "general information": {
+    // premedication: [],
+    // complications: [],
+    examination: "первичное",
+    "purpose of examination": "диагностика",
+    "examination intolerance": "хорошая",
+    quality: "удовлетворительное",
+    duration: 7,
+    anestesia: "местная: Lidocaini 10%-3.0",
+  },
+  oesophagus: {
+    // другие_патологические_изменения: [null],
+    слизистая: "без_настораживающих_признаков",
+    проходимость: "соответствует нормальной анатомии",
+    "z-линия": "неровная",
+    кардия: {
+      смыкание: "полное",
+    },
+    язвы: false,
+  },
+  желудок: {
+    // язвы: [],
+    // полипы: [],
+    // другие_патологические_изменения: [],
+    слизистая: "без_настораживающих_признаков",
+    складчатость: "нормальная",
+    перистальтика: "нормальная",
+    антральный_отдел: {
+      слизистая: "без_настораживающих_признаков",
+    },
+  },
+  двенадцатиперстная_кишка: {
+    другие_патологические_изменения: [],
+    слизистая: "без_настораживающих_признаков",
+    луковица: {
+      сосочек_Фатера: {
+        форма: "коническая",
+        выделения: "желчь",
+      },
+    },
+  },
+  рекомендации: [],
+  equipment: {
+    processor: "Olympus EVIS EXERA III",
+    endoscope: "Olympus GIF-H180",
+    display: "Sony LMD-2451MD",
+    additional_equipment: "отсос, помпа",
+  },
+  заключение: "Вариант эндоскопической нормы",
+};
 const ModalRecordForm = () => {
   function ArrayFieldTemplate(props) {
     return (
@@ -30,9 +80,6 @@ const ModalRecordForm = () => {
 
     return (
       <div className="container-fluid ">
-        <figure class="text-center">
-          <h1>{props.title}</h1>
-        </figure>
         {props.description}
         <div className="row gx-0">
           {props.properties.map((element, index) => {
@@ -86,6 +133,12 @@ const ModalRecordForm = () => {
   };
   const currentSchema = useSelector((state) => state.schema.currentSchema);
   const formOpen = useSelector((state) => state.schema.formOpen);
+  const currentUiSchema =
+    currentSchema && currentSchema.uiSchema ? currentSchema.uiSchema : {};
+  const combinedUiSchema = {
+    ...uiSchema,
+    ...currentUiSchema,
+  };
 
   if (!formOpen) {
     return null;
@@ -98,12 +151,11 @@ const ModalRecordForm = () => {
     <Card data-bs-theme="dark">
       <Card.Body>
         <Form
-          data-bs-theme="light"
           schema={currentSchema.schema}
           onSubmit={onSubmit}
           validator={validator}
-          uiSchema={uiSchema}
-          // formData={formData}
+          uiSchema={combinedUiSchema}
+          formData={formData}
           widgets={widgets}
           ObjectFieldTemplate={ObjectFieldTemplate}
           ArrayFieldTemplate={ArrayFieldTemplate}

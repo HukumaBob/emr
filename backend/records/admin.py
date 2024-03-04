@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Record, Template, Schema, RecordType
+from .models import Record, Template, Schema
 
 
 @admin.register(Record)
@@ -16,6 +16,6 @@ class TemplateAdmin(admin.ModelAdmin):
 class SchemaAdmin(admin.ModelAdmin):
     list_display = [field.name for field in Schema._meta.fields]
 
-@admin.register(RecordType)
-class RecordTypeAdmin(admin.ModelAdmin):
-    list_display = [field.name for field in RecordType._meta.fields]
+# @admin.register(RecordType)
+# class RecordTypeAdmin(admin.ModelAdmin):
+#     list_display = [field.name for field in RecordType._meta.fields]

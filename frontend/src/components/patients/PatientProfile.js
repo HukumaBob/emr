@@ -2,9 +2,12 @@ import Card from "react-bootstrap/Card";
 import Table from "react-bootstrap/Table";
 import ListGroup from "react-bootstrap/esm/ListGroup";
 import Dropdown from "react-bootstrap/Dropdown";
+import Form from "react-bootstrap/Form";
 import Modal from "react-bootstrap/Modal";
+import Button from "react-bootstrap/Button";
+import { RiFullscreenExitFill, RiFullscreenFill } from "react-icons/ri";
 import { useSelector, useDispatch } from "react-redux";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import calculateAge from "../../utils";
 import { fetchRecords } from "../../slices/recordsSlice";
 import { loadRecord } from "../../slices/recordForm/loadRecord";
@@ -20,6 +23,13 @@ const PatientProfile = () => {
   const patient = useSelector((state) => state.patientForm.patient);
   const records = useSelector((state) => state.records.records);
   const showForm = useSelector((state) => state.schema.formOpen);
+  const [selectedSchema, setSelectedSchema] = useState(null);
+  const [isMaximized, setIsMaximized] = useState(false);
+
+  const handleMaximizeRestore = () => {
+    setIsMaximized(!isMaximized);
+    console.log(isMaximized);
+  };
   useEffect(() => {
     if (patient) {
       dispatch(fetchRecords({ page: 1, patient_id: patient.id }));
@@ -83,9 +93,12 @@ const PatientProfile = () => {
                         {schemas.map((schema) => (
                           <Dropdown.Item
                             key={schema.id}
-                            onClick={() => dispatch(loadSchema(schema.id))}
+                            onClick={() => {
+                              dispatch(loadSchema(schema.id));
+                              setSelectedSchema(schema.name);
+                            }}
                           >
-                            {/* {schema.name} */}
+                            {schema.name}
                           </Dropdown.Item>
                         ))}
                       </Dropdown.Menu>
@@ -100,7 +113,7 @@ const PatientProfile = () => {
                     onClick={() => dispatch(loadRecord(record.id))}
                     className="patient-profile"
                   >
-                    <td colSpan="2">{record.record_type_name.name}</td>
+                    <td colSpan="2">{record.findings_schema_name}</td>
                     <td colSpan="1">
                       {new Date(record.created_at).toLocaleDateString()}
                     </td>
@@ -111,16 +124,42 @@ const PatientProfile = () => {
           </ListGroup.Item>
         </ListGroup>
         <Modal
-          fullscreen={true}
-          // size="md"
+          fullscreen={isMaximized}
+          size="lg"
           show={showForm}
           onHide={() => dispatch(closeSchemaForm())}
         >
-          <Modal.Header closeButton style={{ backgroundColor: "SlateGrey" }}>
-            <Modal.Title id="modal-title">new record:</Modal.Title>
-            <span>{schemas.name}</span>
+          <Modal.Header className="position-relative" closeButton>
+            {" "}
+            <Button
+              variant="secondary"
+              className="position-absolute top-50 translate-middle ms-3"
+              onClick={handleMaximizeRestore}
+            >
+              {isMaximized ? (
+                <RiFullscreenExitFill size="2em" />
+              ) : (
+                <RiFullscreenFill size="2em" />
+              )}
+            </Button>
+            <Modal.Title
+              id="modal-title"
+              className="position-absolute top-50 start-50 translate-middle w-75"
+            >
+              <div className="d-flex justify-content-between align-items-center">
+                <div className="me-3">{selectedSchema}</div>
+                <Form.Select aria-label="Select ds">
+                  <option>Выбери диагноз</option>
+                  <option value="1">One</option>
+                  <option value="2">Two</option>
+                  <option value="3">
+                    Threedsfdsfdsfsdfsdfdsdfsdfsdfsdfsdfsdfsdfsdfsdfsfsdf
+                  </option>
+                </Form.Select>
+              </div>
+            </Modal.Title>
           </Modal.Header>
-          <Modal.Body style={{ backgroundColor: "SlateGrey" }}>
+          <Modal.Body>
             <ModalRecordForm />
           </Modal.Body>
         </Modal>

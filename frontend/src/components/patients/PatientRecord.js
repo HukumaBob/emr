@@ -70,7 +70,7 @@ const PatientRecord = () => {
   return (
     <Card className="card-height">
       <Card.Header>
-        <Card.Title>{record.record_type_name.name}</Card.Title>
+        <Card.Title>{record.findings_schema_name}</Card.Title>
       </Card.Header>
       <Card.Body className="card-content">{renderFindings(findings)}</Card.Body>
     </Card>

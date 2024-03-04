@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Record, Template, Schema, RecordType
+from .models import Record, Template, Schema
 from patients.models import Patient
 from django.contrib.auth import get_user_model
 from users.models import Profile
@@ -23,22 +23,22 @@ class SpecialistNameSerializer(serializers.ModelSerializer):
         return f"{user.first_name} {profile.middle_name} {user.last_name}"
 
 
-class RecordTypeNameSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = RecordType
-        fields = ['name']
+# class FindingsSchemaNameSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Schema
+#         fields = ['name']
 
 
 class RecordSerializer(serializers.ModelSerializer):
     patient_name = PatientNameSerializer(source='patient', read_only=True)
     specialist_name = SpecialistNameSerializer(source='specialist', read_only=True)
-    record_type_name = RecordTypeNameSerializer(source='record_type', read_only=True)
+    findings_schema_name = serializers.StringRelatedField(source='findings_schema')
 
     class Meta:
         model = Record
         fields = [
-            'id', 'patient_name', 'specialist_name','record_type_name',
-            'findings', 'created_at', 'updated_at', 'findings_schema'
+            'id', 'patient_name', 'specialist_name',
+            'findings', 'created_at', 'updated_at', 'findings_schema', 'findings_schema_name'
             ]
 
 
@@ -52,6 +52,7 @@ class SchemaListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Schema
         fields = ['id', 'name']
+
 
 class SchemaDetailSerializer(serializers.ModelSerializer):
     class Meta:
