@@ -12,9 +12,12 @@ import calculateAge from "../../utils";
 import { fetchRecords } from "../../slices/recordsSlice";
 import { loadRecord } from "../../slices/recordForm/loadRecord";
 import { closeSchemaForm } from "../../slices/schema/schemaReducer";
+import { closeTemplateForm } from "../../slices/templates/templateReducer";
 import { fetchSchemas } from "../../slices/schema/fetchSchemas";
 import { loadSchema } from "../../slices/schema/loadSchema";
 import ModalRecordForm from "../records/ModalRecordForm";
+import { fetchTemplates } from "../../slices/templates/fetchTemplates";
+import { loadTemplate } from "../../slices/templates/loadTemplate";
 import "./Patients.css";
 
 const PatientProfile = () => {
@@ -25,14 +28,36 @@ const PatientProfile = () => {
   const showForm = useSelector((state) => state.schema.formOpen);
   const [selectedSchema, setSelectedSchema] = useState(null);
   const [isMaximized, setIsMaximized] = useState(false);
+  const [selectedTemplates, setSelectedTemplates] = useState(null);
+  const currentTemplate = useSelector(
+    (state) => state.template.currentTemplate
+  );
+
+  useEffect(() => {
+    if (selectedSchema) {
+      dispatch(
+        fetchTemplates({
+          page: 1,
+          page_size: 100,
+          filters: { findings_schema: selectedSchema?.id },
+        })
+      )
+        .unwrap()
+        .then((template) => {
+          setSelectedTemplates(template);
+        })
+        .catch((error) => console.error("Failed to load template:", error));
+    }
+  }, [selectedSchema, dispatch]);
 
   const handleMaximizeRestore = () => {
     setIsMaximized(!isMaximized);
-    console.log(isMaximized);
   };
   useEffect(() => {
     if (patient) {
-      dispatch(fetchRecords({ page: 1, patient_id: patient.id }));
+      dispatch(
+        fetchRecords({ page: 1, page_size: 100, patient_id: patient.id })
+      );
     }
   }, [patient, dispatch]);
 
@@ -95,7 +120,7 @@ const PatientProfile = () => {
                             key={schema.id}
                             onClick={() => {
                               dispatch(loadSchema(schema.id));
-                              setSelectedSchema(schema.name);
+                              setSelectedSchema(schema);
                             }}
                           >
                             {schema.name}
@@ -127,7 +152,12 @@ const PatientProfile = () => {
           fullscreen={isMaximized}
           size="lg"
           show={showForm}
-          onHide={() => dispatch(closeSchemaForm())}
+          onHide={() => {
+            dispatch(closeSchemaForm());
+            if (currentTemplate) {
+              dispatch(closeTemplateForm());
+            }
+          }}
         >
           <Modal.Header className="position-relative" closeButton>
             {" "}
@@ -147,20 +177,33 @@ const PatientProfile = () => {
               className="position-absolute top-50 start-50 translate-middle w-75"
             >
               <div className="d-flex justify-content-between align-items-center">
-                <div className="me-3">{selectedSchema}</div>
-                <Form.Select aria-label="Select ds">
-                  <option>Выбери диагноз</option>
-                  <option value="1">One</option>
-                  <option value="2">Two</option>
-                  <option value="3">
-                    Threedsfdsfdsfsdfsdfdsdfsdfsdfsdfsdfsdfsdfsdfsdfsfsdf
+                <div className="me-3">{selectedSchema?.name}</div>
+                <Form.Select
+                  aria-label="Select ds"
+                  onChange={(event) => {
+                    const selectedValue = event.target.value;
+                    dispatch(loadTemplate(selectedValue));
+                  }}
+                >
+                  <option key="blankChoice" hidden value>
+                    {" "}
+                    --Select diagnosis--{" "}
                   </option>
+                  {selectedTemplates && selectedTemplates.results ? (
+                    selectedTemplates.results.map((option) => (
+                      <option key={option.id} value={option.id}>
+                        "{option.template_name}"
+                      </option>
+                    ))
+                  ) : (
+                    <option>--Diagnosis is unknown--</option>
+                  )}
                 </Form.Select>
               </div>
             </Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <ModalRecordForm />
+            <ModalRecordForm currentTemplate={currentTemplate} />
           </Modal.Body>
         </Modal>
       </Card.Body>

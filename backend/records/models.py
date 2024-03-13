@@ -3,20 +3,14 @@ import logging
 from patients.models import Patient
 from organization.models import Department
 from users.models import Profile
-from jsonschema import validate, ValidationError
+# from jsonschema import validate, ValidationError
+from fastjsonschema import compile as compile_schema
 from pytils.translit import slugify
 
 logger = logging.getLogger(__name__)
 
-
-# class RecordType(models.Model):
-#     name = models.CharField(max_length=255)
-#     department = models.ForeignKey(
-#         Department, on_delete=models.CASCADE, null=True, blank=True
-#         )
-
-#     def __str__(self):
-#         return self.name
+class ValidationError(Exception):
+    pass
 
 
 class Schema(models.Model):
@@ -40,9 +34,6 @@ class Schema(models.Model):
 
 
 class AbstractRecord(models.Model):
-    # record_type = models.ForeignKey(
-    #     RecordType, on_delete=models.CASCADE, null=True, blank=True
-    #     )
     findings = models.JSONField(default=dict)
     findings_schema = models.ForeignKey(
         Schema, on_delete=models.SET_NULL,
@@ -56,37 +47,41 @@ class AbstractRecord(models.Model):
         super().clean()
         if self.findings_schema:
             try:
-                validate(self.findings, self.findings_schema.schema)
-            except ValidationError as e:
+                validate = compile_schema(self.findings_schema.schema)
+                validate(self.findings)
+            except Exception as e:
                 logger.error(f"Validation error: {e}")
-                raise ValidationError({"findings": str(e)})
+                raise ValidationError({"findings": str(e)})    
 
 
-class Template(AbstractRecord):
+class RecordTemplate(AbstractRecord):
+    template_name = models.CharField(max_length=255)
+    template_slug = models.SlugField(max_length=255, unique=True)
+    department = models.ForeignKey(
+        Department, on_delete=models.CASCADE, null=True,
+        blank=True, related_name='+'
+        )
 
-    def __str__(self):  
-        return f'Template #{self.id}'
+    def save(self, *args, **kwargs):
+        if not self.template_slug:
+            self.template_slug = slugify(self.template_name)
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return str(self.template_name)
 
 
-class Record(models.Model):
+class Record(AbstractRecord):
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
     specialist = models.ForeignKey(
         Profile, on_delete=models.CASCADE, null=True, blank=True
         )
-    # record_type = models.ForeignKey(
-    #     RecordType, on_delete=models.CASCADE, null=True, blank=True
-    #     )
-    findings = models.JSONField(default=dict)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    findings_schema = models.ForeignKey(
-        Schema, on_delete=models.SET_NULL,
-        null=True, blank=True, related_name='+'
-        )
-    is_template = models.BooleanField(default=False)
 
     def __str__(self):
         return f'Record #{self.id} - Patient: {self.patient}'
 
     class Meta:
         ordering = ['-created_at']
+

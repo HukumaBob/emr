@@ -5,6 +5,7 @@ import recordsReducer from "../slices/recordsSlice";
 import patientFormReducer from "../slices/patientFormSlice";
 import recordFormReducer from "../slices/recordFormSlice";
 import schemaReducer from "../slices/schema/schemaReducer";
+import templateReducer from "../slices/templates/templateReducer";
 import errorReducer from "../slices/errorSlice";
 
 const rootReducer = combineReducers({
@@ -14,6 +15,7 @@ const rootReducer = combineReducers({
   patientForm: patientFormReducer,
   recordForm: recordFormReducer,
   schema: schemaReducer,
+  template: templateReducer,
   error: errorReducer,
 });
 

@@ -4,4 +4,5 @@ export const PATIENTS = "patients/";
 export const RECORDS = "records/";
 export const USERS = "users/";
 export const SCHEMAS = "schemas/";
+export const TEMPLATES = "templates/";
 export const PAGE_SIZE = 20;
