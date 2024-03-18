@@ -6,6 +6,10 @@ from users.models import Profile
 
 
 class PatientNameSerializer(serializers.ModelSerializer):
+    first_name = serializers.CharField(required=False)
+    last_name = serializers.CharField(required=False)
+    middle_name = serializers.CharField(required=False)
+
     class Meta:
         model = Patient
         fields = ['first_name', 'last_name', 'middle_name']
@@ -24,7 +28,8 @@ class SpecialistNameSerializer(serializers.ModelSerializer):
 
 
 class RecordSerializer(serializers.ModelSerializer):
-    patient_name = PatientNameSerializer(source='patient', read_only=True)
+    patient_name = PatientNameSerializer(source='patient', required=False)
+    patient_id = serializers.IntegerField(write_only=True)
     specialist_name = SpecialistNameSerializer(
         source='specialist', read_only=True
         )
@@ -35,7 +40,7 @@ class RecordSerializer(serializers.ModelSerializer):
     class Meta:
         model = Record
         fields = [
-            'id', 'patient_name', 'specialist_name',
+            'id', 'patient_id', 'patient_name', 'specialist_name',
             'findings', 'created_at', 'updated_at',
             'findings_schema', 'findings_schema_name'
             ]

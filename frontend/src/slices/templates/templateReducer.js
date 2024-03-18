@@ -7,7 +7,6 @@ const templateSlice = createSlice({
   initialState: {
     templates: [],
     currentTemplate: null,
-    // formOpen: false,
     loading: false,
     error: null,
   },

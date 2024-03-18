@@ -1,15 +1,21 @@
 import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useDebounce } from "use-debounce";
 import { Card } from "react-bootstrap";
 import { Button } from "react-bootstrap";
-import { useSelector } from "react-redux";
 import validator from "@rjsf/validator-ajv8";
 import Form from "@rjsf/bootstrap-4";
-import { useDebounce } from "use-debounce";
+import { createRecord } from "../../slices/recordForm/createRecord";
 
 const ModalRecordForm = ({ currentTemplate }) => {
-  // const [formData, setFormData] = React.useState(null);
   const [inputValue, setInputValue] = useState(currentTemplate?.findings);
-  const [formData] = useDebounce(inputValue, 5000); // Дебаунсинг на 5 с
+  const [formData] = useDebounce(inputValue, 500); // Дебаунсинг на 500 мс
+  const dispatch = useDispatch();
+  const patientId = useSelector((state) => state.patientForm.patient.id); // Получите id пациента из хранилища
+  const specialistId = useSelector((state) => state.auth.username); // Получите id специалиста из хранилища
+  const currentSchemaId = useSelector(
+    (state) => state.schema.currentSchema?.id
+  ); // Получите id схемы находок из хранилища
 
   useEffect(() => {
     setInputValue((prevFormData) => {
@@ -42,7 +48,7 @@ const ModalRecordForm = ({ currentTemplate }) => {
             return (
               <div
                 key={index}
-                className="p-1 m-1 col-12 col-md-3 border rounded"
+                className="p-1 m-0 col-12 col-md-3 border rounded"
               >
                 <div className="d-flex">
                   <Button
@@ -102,9 +108,33 @@ const ModalRecordForm = ({ currentTemplate }) => {
     return null;
   }
 
-  const onSubmit = ({ formData }, event) =>
-    console.log("Data submitted: ", formData);
+  const onSubmit = ({ formData }) => {
+    const payload = {
+      patient_id: patientId,
+      findings: formData,
+      specialist_name: {
+        user: specialistId,
+      },
+      findings_schema: currentSchemaId,
+    };
 
+    // Создайте новый объект FormData
+    const formPayload = new FormData();
+
+    // Для каждого свойства в payload, добавьте его в formPayload
+    for (let key in payload) {
+      if (payload.hasOwnProperty(key)) {
+        // Если свойство является объектом, преобразуйте его в строку JSON
+        if (typeof payload[key] === "object" && payload[key] !== null) {
+          formPayload.append(key, JSON.stringify(payload[key]));
+        } else {
+          formPayload.append(key, payload[key]);
+        }
+      }
+    }
+
+    dispatch(createRecord(formPayload));
+  };
   return (
     <Card data-bs-theme="dark">
       <Card.Header>

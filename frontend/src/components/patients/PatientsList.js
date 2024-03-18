@@ -12,10 +12,10 @@ import { fetchPatients, setCurrentPage } from "../../slices/patientsSlice.js";
 import { openForm, closeForm } from "../../slices/patientFormSlice.js";
 import { loadPatient } from "../../slices/patientForm/loadPatient.js";
 import PatientForm from "./PatientForm.js";
-import Pagination from "react-bootstrap/Pagination";
 import { PAGE_SIZE } from "../../api/apiConfig.js";
 import { RiEdit2Line } from "react-icons/ri";
 import "./Patients.css";
+import PaginationComponent from "../pagination/PaginationComponent.js";
 
 const PatientsList = () => {
   const currentPage = useSelector((state) => state.patients.currentPage);
@@ -110,56 +110,11 @@ const PatientsList = () => {
           </Table>
         </ListGroup.Item>
         <ListGroup.Item>
-          <Pagination className="justify-content-center pb-3">
-            <Pagination.First onClick={() => dispatch(setCurrentPage(1))} />
-            <Pagination.Prev
-              onClick={() =>
-                dispatch(setCurrentPage(currentPage > 1 ? currentPage - 1 : 1))
-              }
-            />
-            <Pagination.Item onClick={() => dispatch(setCurrentPage(1))}>
-              {1}
-            </Pagination.Item>
-            <Pagination.Ellipsis />
-
-            {/* Показываем номера страниц вокруг текущей страницы */}
-            {currentPage > 2 && (
-              <Pagination.Item
-                onClick={() => dispatch(setCurrentPage(currentPage - 1))}
-              >
-                {currentPage - 1}
-              </Pagination.Item>
-            )}
-            {currentPage > 1 && currentPage < totalPages && (
-              <Pagination.Item active>{currentPage}</Pagination.Item>
-            )}
-            {currentPage < totalPages - 1 && (
-              <Pagination.Item
-                onClick={() => dispatch(setCurrentPage(currentPage + 1))}
-              >
-                {currentPage + 1}
-              </Pagination.Item>
-            )}
-
-            <Pagination.Ellipsis />
-            <Pagination.Item
-              onClick={() => dispatch(setCurrentPage(totalPages))}
-            >
-              {totalPages}
-            </Pagination.Item>
-            <Pagination.Next
-              onClick={() =>
-                dispatch(
-                  setCurrentPage(
-                    currentPage < totalPages ? currentPage + 1 : totalPages
-                  )
-                )
-              }
-            />
-            <Pagination.Last
-              onClick={() => dispatch(setCurrentPage(totalPages))}
-            />
-          </Pagination>
+          <PaginationComponent
+            currentPage={currentPage}
+            totalPages={totalPages}
+            setCurrentPage={setCurrentPage}
+          />
         </ListGroup.Item>
         <Modal show={showForm} onHide={() => dispatch(closeForm())}>
           <Modal.Header closeButton>

@@ -1,16 +1,17 @@
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import { LoremIpsum } from "react-lorem-ipsum";
+import Calendar from "./Calendar";
 
 const TodaySchedule = () => {
   return (
     <div>
-      <Card style={{ width: "18rem" }}>
-        <Card.Img variant="top" src="../images/cat (1).jfif" />
+      <Card className="m-1">
+        {/* <Card.Img variant="top" src="../images/cat (1).jfif" /> */}
         <Card.Body>
           <Card.Title>Today Schedule</Card.Title>
           <Card.Text>
-            <LoremIpsum p={1} />
+            <Calendar />
           </Card.Text>
           <Button variant="primary">Go somewhere</Button>
         </Card.Body>

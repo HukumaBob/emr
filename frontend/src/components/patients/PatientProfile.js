@@ -9,7 +9,7 @@ import { RiFullscreenExitFill, RiFullscreenFill } from "react-icons/ri";
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
 import calculateAge from "../../utils";
-import { fetchRecords } from "../../slices/recordsSlice";
+import { fetchRecords, setCurrentPage } from "../../slices/recordsSlice";
 import { loadRecord } from "../../slices/recordForm/loadRecord";
 import { closeSchemaForm } from "../../slices/schema/schemaReducer";
 import { closeTemplateForm } from "../../slices/templates/templateReducer";
@@ -19,9 +19,12 @@ import ModalRecordForm from "../records/ModalRecordForm";
 import { fetchTemplates } from "../../slices/templates/fetchTemplates";
 import { loadTemplate } from "../../slices/templates/loadTemplate";
 import "./Patients.css";
+import PaginationComponent from "../pagination/PaginationComponent";
 
 const PatientProfile = () => {
   const dispatch = useDispatch();
+  const currentPage = useSelector((state) => state.records.currentPage);
+  const totalPages = useSelector((state) => state.records.totalPages);
   const schemas = useSelector((state) => state.schema.schemas);
   const patient = useSelector((state) => state.patientForm.patient);
   const records = useSelector((state) => state.records.records);
@@ -56,10 +59,14 @@ const PatientProfile = () => {
   useEffect(() => {
     if (patient) {
       dispatch(
-        fetchRecords({ page: 1, page_size: 100, patient_id: patient.id })
+        fetchRecords({
+          page: currentPage,
+          page_size: 100,
+          patient_id: patient.id,
+        })
       );
     }
-  }, [patient, dispatch]);
+  }, [dispatch, patient, currentPage]);
 
   useEffect(() => {
     dispatch(fetchSchemas({ page: 1 }));
@@ -148,6 +155,13 @@ const PatientProfile = () => {
             </Table>
           </ListGroup.Item>
         </ListGroup>
+        <ListGroup.Item>
+          <PaginationComponent
+            currentPage={currentPage}
+            totalPages={totalPages}
+            setCurrentPage={setCurrentPage}
+          />
+        </ListGroup.Item>
         <Modal
           fullscreen={isMaximized}
           size="lg"
@@ -177,7 +191,7 @@ const PatientProfile = () => {
               className="position-absolute top-50 start-50 translate-middle w-75"
             >
               <div className="d-flex justify-content-between align-items-center">
-                <div className="me-3">{selectedSchema?.name}</div>
+                <div className="me-2">{selectedSchema?.name}</div>
                 <Form.Select
                   aria-label="Select ds"
                   onChange={(event) => {
