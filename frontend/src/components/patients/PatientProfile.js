@@ -5,6 +5,9 @@ import Dropdown from "react-bootstrap/Dropdown";
 import Form from "react-bootstrap/Form";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
+import Nav from "react-bootstrap/Nav";
+import Col from "react-bootstrap/Col";
+import Row from "react-bootstrap/Row";
 import { RiFullscreenExitFill, RiFullscreenFill } from "react-icons/ri";
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
@@ -35,6 +38,15 @@ const PatientProfile = () => {
   const currentTemplate = useSelector(
     (state) => state.template.currentTemplate
   );
+  const [selectedRecordId, setSelectedRecordId] = useState(null);
+  const [activeKey, setActiveKey] = useState("#allRecords");
+  const [filters, setFilters] = useState({});
+  const handleFilterChange = (event) => {
+    setFilters({
+      ...filters,
+      [event.target.name]: event.target.value,
+    });
+  };
 
   useEffect(() => {
     if (selectedSchema) {
@@ -61,12 +73,12 @@ const PatientProfile = () => {
       dispatch(
         fetchRecords({
           page: currentPage,
-          page_size: 100,
+          filters: filters,
           patient_id: patient.id,
         })
       );
     }
-  }, [dispatch, patient, currentPage]);
+  }, [dispatch, patient, currentPage, filters]);
 
   useEffect(() => {
     dispatch(fetchSchemas({ page: 1 }));
@@ -85,141 +97,231 @@ const PatientProfile = () => {
 
   return (
     <Card className="card-height">
-      <Card.Img variant="top" src={patient.photo} />
+      <Card.Header>
+        <Nav variant="tabs" activeKey={activeKey} onSelect={setActiveKey}>
+          <Nav.Item>
+            <Nav.Link href="#patientInformation">About patient</Nav.Link>
+          </Nav.Item>
+          <Nav.Item>
+            <Nav.Link href="#allRecords">Patient records</Nav.Link>
+          </Nav.Item>
+          <Nav.Item>
+            <Nav.Link href="#photo">Patient photo</Nav.Link>
+          </Nav.Item>
+        </Nav>
+      </Card.Header>
       <Card.Body className="card-content">
-        <ListGroup variant="flush">
-          <ListGroup.Item className="m-1">
-            <Card.Subtitle className="text-muted">
-              General information:
-            </Card.Subtitle>
-            <Card.Text className="m-1">
-              <span className="card-name">name: </span>
-              {patient.first_name} {patient.middle_name} {patient.last_name}
-            </Card.Text>
-            <Card.Text className="m-1">
-              <span className="card-name">gender: </span>
-              {patient.gender}
-              {", "}
-              <span className="card-name">age: </span>
-              {calculateAge(patient.date_of_birth)}
-            </Card.Text>
-          </ListGroup.Item>
-          <ListGroup.Item>
-            <Card.Subtitle className="text-muted">
-              Medical information:
-            </Card.Subtitle>
-            <Table striped bordered hover>
-              <thead>
-                <tr>
-                  <th colSpan="3">
-                    <Dropdown>
-                      <Dropdown.Toggle
-                        variant="primary"
-                        id="dropdown-basic"
-                        // split
-                        className="my-button"
-                      >
-                        Add record
-                      </Dropdown.Toggle>
-                      <Dropdown.Menu>
-                        {schemas.map((schema) => (
-                          <Dropdown.Item
-                            key={schema.id}
-                            onClick={() => {
-                              dispatch(loadSchema(schema.id));
-                              setSelectedSchema(schema);
-                            }}
-                          >
-                            {schema.name}
-                          </Dropdown.Item>
-                        ))}
-                      </Dropdown.Menu>
-                    </Dropdown>
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {records.map((record) => (
-                  <tr
-                    key={record.id}
-                    onClick={() => dispatch(loadRecord(record.id))}
-                    className="patient-profile"
-                  >
-                    <td colSpan="2">{record.findings_schema_name}</td>
-                    <td colSpan="1">
-                      {new Date(record.created_at).toLocaleDateString()}
-                    </td>
+        {activeKey === "#photo" && (
+          <>
+            <Card.Img variant="top" src={patient.photo} />
+          </>
+        )}
+        {activeKey === "#allRecords" && (
+          <>
+            <ListGroup.Item>
+              <Form>
+                <Form.Group as={Row} className="mb-1" controlId="nameFilter">
+                  <Col sm="6">
+                    <Form.Control
+                      type="text"
+                      name="findings_schema__name"
+                      placeholder="Record name"
+                      onChange={handleFilterChange}
+                    />
+                  </Col>
+                  <Col sm="6">
+                    <Form.Control
+                      type="text"
+                      name="specialist"
+                      placeholder="Specialist"
+                      onChange={handleFilterChange}
+                    />
+                  </Col>
+                </Form.Group>
+                <Form.Group as={Row} className="mb-1" controlId="nameFilter">
+                  <Col sm="6">
+                    <Form.Control
+                      type="date"
+                      name="date_of_record_after"
+                      placeholder="Record name"
+                      onChange={handleFilterChange}
+                    />
+                  </Col>
+                  <Col sm="6">
+                    <Form.Control
+                      type="date"
+                      name="date_of_record_before"
+                      onChange={handleFilterChange}
+                    />
+                  </Col>
+                </Form.Group>
+              </Form>
+              <Table striped bordered hover>
+                <thead>
+                  <tr>
+                    <th colSpan="3">
+                      <Dropdown>
+                        <Dropdown.Toggle
+                          variant="primary"
+                          id="dropdown-basic"
+                          // split
+                          className="my-button"
+                        >
+                          Add record
+                        </Dropdown.Toggle>
+                        <Dropdown.Menu>
+                          {schemas.map((schema) => (
+                            <Dropdown.Item
+                              key={schema.id}
+                              onClick={() => {
+                                dispatch(loadSchema(schema.id));
+                                setSelectedSchema(schema);
+                              }}
+                            >
+                              {schema.name}
+                            </Dropdown.Item>
+                          ))}
+                        </Dropdown.Menu>
+                      </Dropdown>
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </Table>
-          </ListGroup.Item>
-        </ListGroup>
-        <ListGroup.Item>
-          <PaginationComponent
-            currentPage={currentPage}
-            totalPages={totalPages}
-            setCurrentPage={setCurrentPage}
-          />
-        </ListGroup.Item>
-        <Modal
-          fullscreen={isMaximized}
-          size="lg"
-          show={showForm}
-          onHide={() => {
-            dispatch(closeSchemaForm());
-            if (currentTemplate) {
-              dispatch(closeTemplateForm());
-            }
-          }}
-        >
-          <Modal.Header className="position-relative" closeButton>
-            {" "}
-            <Button
-              variant="secondary"
-              className="position-absolute top-50 translate-middle ms-3"
-              onClick={handleMaximizeRestore}
+                </thead>
+                <tbody>
+                  {records.map((record) => (
+                    <tr
+                      key={record.id}
+                      onClick={() => {
+                        dispatch(loadRecord(record.id));
+                        setSelectedRecordId(record.id);
+                      }}
+                      className="patient-profile"
+                    >
+                      <td
+                        className={`patient-profile ${
+                          record.id === selectedRecordId ? "selected" : ""
+                        }`}
+                        colSpan="2"
+                      >
+                        {record.findings_schema_name}
+                      </td>
+                      <td colSpan="1">
+                        {new Date(record.created_at).toLocaleDateString()}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+            </ListGroup.Item>
+            <ListGroup.Item>
+              <PaginationComponent
+                currentPage={currentPage}
+                totalPages={totalPages}
+                setCurrentPage={setCurrentPage}
+              />
+            </ListGroup.Item>
+            <Modal
+              fullscreen={isMaximized}
+              size="lg"
+              show={showForm}
+              onHide={() => {
+                dispatch(closeSchemaForm());
+                if (currentTemplate) {
+                  dispatch(closeTemplateForm());
+                }
+              }}
             >
-              {isMaximized ? (
-                <RiFullscreenExitFill size="2em" />
-              ) : (
-                <RiFullscreenFill size="2em" />
-              )}
-            </Button>
-            <Modal.Title
-              id="modal-title"
-              className="position-absolute top-50 start-50 translate-middle w-75"
-            >
-              <div className="d-flex justify-content-between align-items-center">
-                <div className="me-2">{selectedSchema?.name}</div>
-                <Form.Select
-                  aria-label="Select ds"
-                  onChange={(event) => {
-                    const selectedValue = event.target.value;
-                    dispatch(loadTemplate(selectedValue));
-                  }}
+              <Modal.Header className="position-relative" closeButton>
+                {" "}
+                <Button
+                  variant="secondary"
+                  className="position-absolute top-50 translate-middle ms-3"
+                  onClick={handleMaximizeRestore}
                 >
-                  <option key="blankChoice" hidden value>
-                    {" "}
-                    --Select diagnosis--{" "}
-                  </option>
-                  {selectedTemplates && selectedTemplates.results ? (
-                    selectedTemplates.results.map((option) => (
-                      <option key={option.id} value={option.id}>
-                        "{option.template_name}"
-                      </option>
-                    ))
+                  {isMaximized ? (
+                    <RiFullscreenExitFill />
                   ) : (
-                    <option>--Diagnosis is unknown--</option>
+                    <RiFullscreenFill />
                   )}
-                </Form.Select>
-              </div>
-            </Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <ModalRecordForm currentTemplate={currentTemplate} />
-          </Modal.Body>
-        </Modal>
+                </Button>
+                <Modal.Title
+                  id="modal-title"
+                  className="position-absolute top-50 start-50 translate-middle w-75"
+                >
+                  <div className="d-flex justify-content-between align-items-center">
+                    <Form.Select
+                      aria-label="Select ds"
+                      onChange={(event) => {
+                        const selectedValue = event.target.value;
+                        dispatch(loadTemplate(selectedValue));
+                      }}
+                    >
+                      <option key="blankChoice" hidden value>
+                        {selectedSchema?.name}
+                      </option>
+                      {selectedTemplates && selectedTemplates.results ? (
+                        selectedTemplates.results.map((option) => (
+                          <option key={option.id} value={option.id}>
+                            {option.template_name}
+                          </option>
+                        ))
+                      ) : (
+                        <option>--Diagnosis is unknown--</option>
+                      )}
+                    </Form.Select>
+                  </div>
+                </Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                <ModalRecordForm currentTemplate={currentTemplate} />
+              </Modal.Body>
+            </Modal>
+          </>
+        )}
+        {activeKey === "#patientInformation" && (
+          <>
+            <Card.Title className="text-muted">General information:</Card.Title>
+            <ListGroup className="list-group-flush">
+              <ListGroup.Item>
+                <Card.Text>
+                  <span className="card-name">First name: </span>
+                  {patient?.first_name}
+                </Card.Text>
+                <Card.Text>
+                  <span className="card-name">Middle name: </span>
+                  {patient?.middle_name}
+                </Card.Text>
+                <Card.Text>
+                  <span className="card-name">Last name: </span>
+                  {patient?.last_name}
+                </Card.Text>
+              </ListGroup.Item>
+              <ListGroup.Item>
+                <Card.Text>
+                  <span className="card-name">Gender: </span>
+                  {patient.gender}
+                </Card.Text>
+                <Card.Text>
+                  <span className="card-name">Age: </span>
+                  {calculateAge(patient.date_of_birth)}
+                </Card.Text>
+              </ListGroup.Item>
+              <ListGroup.Item>
+                <Card.Text>
+                  <span className="card-name">Address: </span>
+                  {patient?.address ? patient?.address : "unknown"}
+                </Card.Text>
+                <Card.Text>
+                  <span className="card-name">Phone: </span>
+                  {patient?.phone_number ? patient?.phone_number : "unknown"}
+                </Card.Text>
+                <Card.Text>
+                  <span className="card-name">Email: </span>
+                  {patient?.email ? patient?.email : "unknown"}
+                </Card.Text>
+              </ListGroup.Item>
+            </ListGroup>
+          </>
+        )}
       </Card.Body>
     </Card>
   );

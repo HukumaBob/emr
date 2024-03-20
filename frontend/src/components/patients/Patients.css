@@ -15,3 +15,7 @@
 .card-content {
   overflow-y: auto;
 }
+.patient-profile.selected {
+  background-color: #7491ad; /* Цвет фона для выбранного пациента */
+  color: #0e0130; /* Цвет текста для выбранного пациента */
+}

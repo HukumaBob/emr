@@ -1,21 +1,5 @@
 import Card from "react-bootstrap/Card";
-import Form from "react-bootstrap/Form";
-import Button from "react-bootstrap/Button";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
-import { useReducer, useRef, useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { closeForm } from "../../slices/recordFormSlice";
-import { createRecord } from "../../slices/recordForm/createRecord";
-import { deleteRecord } from "../../slices/recordForm/deleteRecord";
-import { deletePhotoRecord } from "../../slices/recordForm/deletePhotoRecord";
-import { updateRecord } from "../../slices/recordForm/updateRecord";
-import { fetchRecords } from "../../slices/recordsSlice";
-import "./recordForm.css";
-import {
-  initialRecordState,
-  recordReducer,
-} from "../../slices/recordForm/recordReducer";
+import { useSelector } from "react-redux";
 
 const RecordForm = () => {
   const record = useSelector((state) => state.recordForm.record);

@@ -9,6 +9,8 @@ const authSlice = createSlice({
     isAuthenticated: localStorage.getItem("token") ? true : false,
     token: localStorage.getItem("token") || null,
     username: localStorage.getItem("username") || null,
+    id: null,
+    profile: null,
   },
   reducers: {},
   extraReducers: (builder) => {
@@ -16,12 +18,16 @@ const authSlice = createSlice({
       state.isAuthenticated = true;
       state.token = action.payload.token;
       state.username = action.payload.username;
+      state.id = action.payload.id;
+      state.profile = action.payload.profile;
       action.meta.arg.onLoginSuccess();
     });
     builder.addCase(logout.fulfilled, (state) => {
       state.isAuthenticated = false;
       state.token = null;
       state.username = null;
+      state.id = null;
+      state.profile = null;
     });
   },
 });
@@ -29,4 +35,6 @@ const authSlice = createSlice({
 export const token = (state) => state.auth.token;
 export const isAuthenticated = (state) => state.auth.isAuthenticated;
 export const username = (state) => state.auth.username;
+export const me = (state) => state.auth.me;
+export const profile = (state) => state.auth.profile;
 export default authSlice.reducer;

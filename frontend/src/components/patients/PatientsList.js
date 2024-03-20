@@ -24,6 +24,7 @@ const PatientsList = () => {
   const totalPages = useSelector((state) => state.patients.totalPages);
   const showForm = useSelector((state) => state.patientForm.showForm);
   const [filters, setFilters] = useState({});
+  const [selectedPatientId, setSelectedPatientId] = useState(null);
 
   const handleFilterChange = (event) => {
     setFilters({
@@ -77,7 +78,7 @@ const PatientsList = () => {
                     className="my-button"
                     onClick={() => dispatch(openForm())}
                   >
-                    Add new
+                    Add patient
                   </Button>
                 </th>
               </tr>
@@ -87,19 +88,25 @@ const PatientsList = () => {
                 <tr key={patient.id}>
                   <td>{(currentPage - 1) * PAGE_SIZE + index + 1}</td>
                   <td
-                    className="patient-profile"
+                    className={`patient-profile ${
+                      patient.id === selectedPatientId ? "selected" : ""
+                    }`}
                     onClick={() => {
                       dispatch(loadPatient(patient.id));
+                      setSelectedPatientId(patient.id);
                     }}
                   >
                     {patient.first_name} {patient.middle_name}{" "}
                     {patient.last_name}, {patient.date_of_birth}
                   </td>
                   <td
-                    className="patient-profile"
+                    className={`patient-profile ${
+                      patient.id === selectedPatientId ? "selected" : ""
+                    }`}
                     onClick={() => {
                       dispatch(loadPatient(patient.id));
                       dispatch(openForm());
+                      setSelectedPatientId(patient.id);
                     }}
                   >
                     <RiEdit2Line />

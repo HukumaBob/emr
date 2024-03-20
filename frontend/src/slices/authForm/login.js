@@ -2,7 +2,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { handleError } from "../../components/error/handlerError";
 import "react-toastify/dist/ReactToastify.css";
-import { BASE_URL, LOGIN_ENDPOINT } from "../../api/apiConfig";
+import { BASE_URL, LOGIN_ENDPOINT, ME, PROFILE } from "../../api/apiConfig";
 
 export const login = createAsyncThunk(
   "auth/login",
@@ -17,7 +17,14 @@ export const login = createAsyncThunk(
         localStorage.setItem("token", token);
         localStorage.setItem("username", username);
       }
-      return { token, username };
+      const meResponse = await axios.get(`${BASE_URL}${ME}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const id = meResponse.data.id;
+      const profileResponse = await axios.get(`${BASE_URL}${PROFILE}${id}`);
+      const profile = profileResponse.data;
+      console.log(profile);
+      return { token, username, id, profile };
     } catch (error) {
       return handleError(error, dispatch, rejectWithValue);
     }

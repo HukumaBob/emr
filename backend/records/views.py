@@ -1,5 +1,6 @@
 from rest_framework import viewsets, status
 from rest_framework.response import Response
+from django_filters.rest_framework import DjangoFilterBackend
 from .models import Record, Schema, RecordTemplate
 from patients.models import Patient
 from .serializers import (
@@ -10,11 +11,14 @@ from .serializers import (
     RecordTemplateListSerializer,
     )
 from patients.pagination import StandardResultsSetPagination
+from .filters import RecordFilter
 
 
 class RecordViewSet(viewsets.ModelViewSet):
     serializer_class = RecordSerializer
     pagination_class = StandardResultsSetPagination
+    filter_backends = (DjangoFilterBackend,)
+    filterset_class = RecordFilter
 
     def get_queryset(self):
         queryset = Record.objects.all()
@@ -23,15 +27,22 @@ class RecordViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(patient__id=patient_id)
         return queryset
 
+
 def create(self, request, *args, **kwargs):
     patient_id = request.data.get('patient_id')
     if not patient_id:
-        return Response({'detail': 'patient_id is required'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(
+            {'detail': 'patient_id is required'},
+            status=status.HTTP_400_BAD_REQUEST
+            )
 
     try:
         patient = Patient.objects.get(id=patient_id)
     except Patient.DoesNotExist:
-        return Response({'detail': 'Patient not found'}, status=status.HTTP_404_NOT_FOUND)
+        return Response(
+            {'detail': 'Patient not found'},
+            status=status.HTTP_404_NOT_FOUND
+            )
 
     mutable_data = request.data.copy()  # Создайте копию данных запроса
     mutable_data['patient'] = patient.id  # Измените копию данных запроса
