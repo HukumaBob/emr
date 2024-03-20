@@ -9,7 +9,14 @@ export const apiRequest = async (
   { dispatch, rejectWithValue }
 ) => {
   try {
-    const response = await axios[method](url, data);
+    // Получите токен из localStorage
+    const token = localStorage.getItem("token");
+
+    // Создайте конфигурацию для axios
+    const config = {
+      headers: { Authorization: `Bearer ${token}` },
+    };
+    const response = await axios[method](url, data, config);
     return response.data;
   } catch (error) {
     return handleError(error, dispatch, rejectWithValue);

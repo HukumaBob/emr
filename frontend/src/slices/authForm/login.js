@@ -23,7 +23,10 @@ export const login = createAsyncThunk(
       const id = meResponse.data.id;
       const profileResponse = await axios.get(`${BASE_URL}${PROFILE}${id}`);
       const profile = profileResponse.data;
-      console.log(profile);
+      if (profile) {
+        localStorage.setItem("id", id);
+        localStorage.setItem("profile", JSON.stringify(profile));
+      }
       return { token, username, id, profile };
     } catch (error) {
       return handleError(error, dispatch, rejectWithValue);

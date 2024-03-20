@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 from .models import Record, Schema, RecordTemplate
 from patients.models import Patient
+from users.models import Profile
 from .serializers import (
     RecordSerializer,
     SchemaListSerializer,
@@ -27,30 +28,37 @@ class RecordViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(patient__id=patient_id)
         return queryset
 
-
-def create(self, request, *args, **kwargs):
-    patient_id = request.data.get('patient_id')
-    if not patient_id:
-        return Response(
-            {'detail': 'patient_id is required'},
-            status=status.HTTP_400_BAD_REQUEST
+    def create(self, request, *args, **kwargs):
+        patient_id = request.data.get('patient_id')
+        if not patient_id:
+            return Response(
+                {'detail': 'patient_id is required'},
+                status=status.HTTP_400_BAD_REQUEST
             )
 
-    try:
-        patient = Patient.objects.get(id=patient_id)
-    except Patient.DoesNotExist:
-        return Response(
-            {'detail': 'Patient not found'},
-            status=status.HTTP_404_NOT_FOUND
+        try:
+            patient = Patient.objects.get(id=patient_id)
+            user = request.user
+            profile = Profile.objects.get(user=user)
+        except Patient.DoesNotExist:
+            return Response(
+                {'detail': 'Patient not found'},
+                status=status.HTTP_404_NOT_FOUND
+            )
+        except Profile.DoesNotExist:
+            return Response(
+                {'detail': 'Profile not found'},
+                status=status.HTTP_404_NOT_FOUND
             )
 
-    mutable_data = request.data.copy()  # Создайте копию данных запроса
-    mutable_data['patient'] = patient.id  # Измените копию данных запроса
+        mutable_data = request.data.copy()  # Создайте копию данных запроса
+        mutable_data['patient'] = patient.id  # Измените копию данных запроса
+        mutable_data['specialist'] = profile.id  # добавьте id профиля
 
-    # Замените request.data на mutable_data перед вызовом super().create()
-    request._full_data = mutable_data
+        # Замените request.data на mutable_data перед вызовом super().create()
+        request._full_data = mutable_data
 
-    return super().create(request, *args, **kwargs)
+        return super().create(request, *args, **kwargs)
 
 
 class RecordTemplateViewSet(viewsets.ModelViewSet):

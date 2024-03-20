@@ -30,9 +30,8 @@ class SpecialistNameSerializer(serializers.ModelSerializer):
 class RecordSerializer(serializers.ModelSerializer):
     patient_name = PatientNameSerializer(source='patient', required=False)
     patient_id = serializers.IntegerField(write_only=True)
-    specialist_name = SpecialistNameSerializer(
-        source='specialist', read_only=True
-        )
+    specialist = serializers.IntegerField(write_only=True)
+
     findings_schema_name = serializers.StringRelatedField(
         source='findings_schema'
         )
@@ -40,11 +39,23 @@ class RecordSerializer(serializers.ModelSerializer):
     class Meta:
         model = Record
         fields = [
-            'id', 'patient_id', 'patient_name', 'specialist_name',
+            'id', 'patient_id', 'patient_name', 'specialist',
             'findings', 'created_at', 'updated_at',
             'findings_schema', 'findings_schema_name'
             ]
-
+    
+    def to_internal_value(self, data):
+        internal_value = super().to_internal_value(data)
+        specialist_id = internal_value.get('specialist')
+        if specialist_id is not None:
+            try:
+                profile = Profile.objects.get(id=specialist_id)
+                internal_value['specialist'] = profile
+            except Profile.DoesNotExist:
+                raise serializers.ValidationError({
+                    'specialist': 'Profile not found.'
+                })
+        return internal_value
 
 class RecordTemplateSerializer(serializers.ModelSerializer):
     class Meta:

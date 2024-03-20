@@ -9,8 +9,8 @@ const authSlice = createSlice({
     isAuthenticated: localStorage.getItem("token") ? true : false,
     token: localStorage.getItem("token") || null,
     username: localStorage.getItem("username") || null,
-    id: null,
-    profile: null,
+    id: localStorage.getItem("id") || null,
+    profile: localStorage.getItem("profile") || null,
   },
   reducers: {},
   extraReducers: (builder) => {

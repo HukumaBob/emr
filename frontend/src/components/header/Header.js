@@ -21,7 +21,9 @@ import { logout } from "../../slices/authForm/logout";
 
 function Header() {
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
-  const username = useSelector((state) => state.auth.username);
+  // const username = useSelector((state) => state.auth.username);
+  const profileJSON = localStorage.getItem("profile");
+  const profile = JSON.parse(profileJSON);
   const dispatch = useDispatch();
   const [showLogin, setShowLogin] = useState(false);
 
@@ -94,7 +96,8 @@ function Header() {
                     onClick={handleLogout}
                     className="d-inline-block align-self-center"
                   >
-                    Welcome, {username}
+                    Welcome, {profile.role} {profile.first_name}{" "}
+                    {profile.last_name}
                     <RiLogoutCircleRLine size="2em" className=" pointed-icon" />
                   </Navbar.Text>
                 </>
