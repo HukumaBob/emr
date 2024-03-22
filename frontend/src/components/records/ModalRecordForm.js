@@ -1,75 +1,20 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Card } from "react-bootstrap";
-import { Button } from "react-bootstrap";
+import { Card, Button, Container, Col, Row } from "react-bootstrap";
 import validator from "@rjsf/validator-ajv8";
 import Form from "@rjsf/bootstrap-4";
 import { createRecord } from "../../slices/recordForm/createRecord";
 import { closeSchemaForm } from "../../slices/schema/schemaReducer";
 import { fetchRecords } from "../../slices/recordsSlice";
-
-function ObjectFieldTemplate(props) {
-  const [isExpanded, setIsExpanded] = useState(() => ({
-    ...Array(props.properties.length).fill(true),
-  }));
-
-  const handleToggle = (index) => {
-    setIsExpanded((prevState) => ({
-      ...prevState,
-      [index]: !prevState[index],
-    }));
-  };
-
-  return (
-    <div className="container-fluid">
-      {props.description}
-      <div className="row gx-0">
-        {props.properties.map((element, index) => {
-          return (
-            <div key={index} className="p-1 m-0 col-12 col-md-3 border rounded">
-              <div className="d-flex">
-                <Button
-                  className="btn btn-secondary w-100"
-                  onClick={() => handleToggle(index)}
-                >
-                  {isExpanded[index]
-                    ? "Свернуть"
-                    : `${element.content.props.schema.title}`}
-                </Button>
-              </div>
-              {isExpanded[index] && element.content}
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
-
-function CustomSelectWidget(props) {
-  const { id, required, onChange, value, options, label } = props;
-  return (
-    <select
-      className="form-select"
-      aria-label={label}
-      id={id}
-      required={required}
-      onChange={(event) => onChange(event.target.value)}
-      value={value}
-    >
-      <option value=""></option>
-      {options.enumOptions.map((option, i) => (
-        <option key={i} value={option.value}>
-          {option.label}
-        </option>
-      ))}
-    </select>
-  );
-}
+import "./RecordForm.css";
+import { closeTemplateForm } from "../../slices/templates/templateReducer";
+import ObjectFieldTemplate from "../rjsfCustom/ObjectFieldTemplate";
+import CustomSelectWidget from "../rjsfCustom/CustomSelectWidget";
+import ArrayFieldTemplate from "../rjsfCustom/ArrayFieldTemplate";
 
 const ModalRecordForm = ({ currentTemplate }) => {
   const [formData, setInputValue] = useState(currentTemplate?.findings);
-  // const [formData] = useDebounce(inputValue, 5000);
+  const [usedTemplates, setUsedTemplates] = useState([]);
   const dispatch = useDispatch();
   const patientId = useSelector((state) => state.patientForm.patient.id);
   const currentSchemaId = useSelector(
@@ -85,6 +30,18 @@ const ModalRecordForm = ({ currentTemplate }) => {
       return newFormData;
     });
   }, [currentTemplate?.findings]);
+
+  useEffect(() => {
+    if (currentTemplate?.template_name) {
+      setUsedTemplates((prevTemplates) => {
+        if (!prevTemplates.includes(currentTemplate.template_name)) {
+          return [...prevTemplates, currentTemplate.template_name];
+        } else {
+          return prevTemplates;
+        }
+      });
+    }
+  }, [currentTemplate?.template_name]);
 
   const widgets = {
     SelectWidget: CustomSelectWidget,
@@ -105,16 +62,11 @@ const ModalRecordForm = ({ currentTemplate }) => {
     return null;
   }
 
-  const createRecordData = (formPayload) => {
-    dispatch(createRecord(formPayload));
-    // .then(() => {
-    // dispatch(closeForm()); // Закрываем модальное окно после успешного выполнения
-    // dispatch(fetchRecords(1, dispatch));
-    // dispatch({ type: "reset" }); // Сбрасываем состояние формы
-    // })
-    // .catch((error) => {
-    //   console.error("Ошибка при создании записи:", error);
-    // });
+  const closeForm = () => {
+    dispatch(closeSchemaForm());
+    if (currentTemplate) {
+      dispatch(closeTemplateForm());
+    }
   };
 
   const onSubmit = ({ formData }) => {
@@ -124,13 +76,10 @@ const ModalRecordForm = ({ currentTemplate }) => {
       findings_schema: currentSchemaId,
     };
 
-    // Создайте новый объект FormData
     const formPayload = new FormData();
 
-    // Для каждого свойства в payload, добавьте его в formPayload
     for (let key in payload) {
       if (payload.hasOwnProperty(key)) {
-        // Если свойство является объектом, преобразуйте его в строку JSON
         if (typeof payload[key] === "object" && payload[key] !== null) {
           formPayload.append(key, JSON.stringify(payload[key]));
         } else {
@@ -140,40 +89,53 @@ const ModalRecordForm = ({ currentTemplate }) => {
     }
 
     dispatch(createRecord(formPayload, dispatch)).then(() => {
-      dispatch(closeSchemaForm());
+      closeForm();
       dispatch(
         fetchRecords({
           page: 1,
           patient_id: patientId,
         })
       ).catch((error) => {
-        console.error("Ошибка при создании записи:", error);
+        console.error("Error when create a record:", error);
       });
     });
   };
+
   const onCancel = () => {
-    dispatch(closeSchemaForm());
+    closeForm();
   };
+
   return (
     <Card data-bs-theme="dark">
       <Card.Header>
-        <Card.Title>{currentTemplate?.template_slug}</Card.Title>
+        <Card.Title>Used templates: {usedTemplates.join(", ")}</Card.Title>
       </Card.Header>
       <Card.Body>
         <Form
           schema={currentSchema.schema}
           onSubmit={onSubmit}
-          onCancel={onCancel}
-          liveOmit={true}
+          templates={{ ArrayFieldTemplate }}
           formData={formData}
           onChange={(e) => setInputValue(e.formData)}
           validator={validator}
           uiSchema={combinedUiSchema}
           widgets={widgets}
-          ObjectFieldTemplate={ObjectFieldTemplate}
+          liveValidate
         >
-          <Button type="submit">Submit</Button>
-          <Button type="button">Cancel</Button>
+          <Container>
+            <Row>
+              <Col sm="12">
+                <Button
+                  onClick={onCancel}
+                  type="button"
+                  className="my-button m-1"
+                  variant="secondary"
+                >
+                  Cancel
+                </Button>
+              </Col>
+            </Row>
+          </Container>
         </Form>
       </Card.Body>
     </Card>

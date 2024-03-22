@@ -233,14 +233,14 @@ const PatientProfile = () => {
               <Modal.Header className="position-relative" closeButton>
                 {" "}
                 <Button
-                  variant="secondary"
+                  variant="light"
                   className="position-absolute top-50 translate-middle ms-3"
                   onClick={handleMaximizeRestore}
                 >
                   {isMaximized ? (
-                    <RiFullscreenExitFill />
+                    <RiFullscreenExitFill size="2em" />
                   ) : (
-                    <RiFullscreenFill />
+                    <RiFullscreenFill size="2em" />
                   )}
                 </Button>
                 <Modal.Title
@@ -272,7 +272,10 @@ const PatientProfile = () => {
                 </Modal.Title>
               </Modal.Header>
               <Modal.Body>
-                <ModalRecordForm currentTemplate={currentTemplate} />
+                <ModalRecordForm
+                  className="m-5"
+                  currentTemplate={currentTemplate}
+                />
               </Modal.Body>
             </Modal>
           </>
