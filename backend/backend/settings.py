@@ -1,3 +1,4 @@
+from datetime import timedelta
 import os
 from pathlib import Path
 import logging.config
@@ -24,9 +25,6 @@ LOGGING = {
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-y0g=#92o3$!@936g4+9c$y(h5m8ify#40&5!m_gj(46+%@sww1'
@@ -108,7 +106,10 @@ REST_FRAMEWORK = {
 
 SIMPLE_JWT = {
    'AUTH_HEADER_TYPES': ('Bearer',),
+   "ACCESS_TOKEN_LIFETIME": timedelta(days=1),
+   "REFRESH_TOKEN_LIFETIME": timedelta(days=10),
 }
+
 
 WSGI_APPLICATION = 'backend.wsgi.application'
 
@@ -142,10 +143,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# REST_FRAMEWORK = {
-#     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-#     'PAGE_SIZE': 10
-# }
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/

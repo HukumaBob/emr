@@ -52,7 +52,7 @@ const ModalRecordForm = ({ currentTemplate }) => {
   const currentSchema = useSelector((state) => state.schema.currentSchema);
   const formOpen = useSelector((state) => state.schema.formOpen);
   const currentUiSchema =
-    currentSchema && currentSchema.uiSchema ? currentSchema.uiSchema : {};
+    currentSchema && currentSchema.ui_schema ? currentSchema.ui_schema : {};
   const combinedUiSchema = {
     ...uiSchema,
     ...currentUiSchema,

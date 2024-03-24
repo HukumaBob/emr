@@ -72,7 +72,7 @@ export default function ObjectFieldTemplate(props) {
               setOpenAll(!openAll);
             }}
           >
-            {openAll ? "Закрыть все вкладки" : "Открыть все вкладки"}
+            {openAll ? "Collapse all" : "Open all cards and submit"}
           </Accordion.Header>
           <Accordion.Body>
             <Button type="submit" className="my-button m-1">

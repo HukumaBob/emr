@@ -1,8 +1,9 @@
+import Form from "react-bootstrap/Form";
+
 export default function CustomSelectWidget(props) {
   const { id, required, onChange, value, options, label } = props;
   return (
-    <select
-      className="form-select"
+    <Form.Select
       aria-label={label}
       id={id}
       required={required}
@@ -15,6 +16,6 @@ export default function CustomSelectWidget(props) {
           {option.label}
         </option>
       ))}
-    </select>
+    </Form.Select>
   );
 }
