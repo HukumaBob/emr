@@ -1,5 +1,6 @@
 import json
 import os
+import shutil
 from django.conf import settings
 from django.db import transaction
 from rest_framework import viewsets, status
@@ -24,7 +25,7 @@ from patients.pagination import StandardResultsSetPagination
 from .filters import RecordFilter
 
 
-DATA_FORMAT = 'data:image/png;'
+DATA_FORMAT = 'data:image/jpeg;'
 PREFIX = 'record-file'
 FILE_DIRECTORY = 'files'
 

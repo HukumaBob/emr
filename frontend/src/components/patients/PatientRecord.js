@@ -1,5 +1,6 @@
 import Card from "react-bootstrap/Card";
 import { useSelector } from "react-redux";
+import { v4 as uuid } from "uuid";
 import "./Patients.css";
 
 const PatientRecord = () => {
@@ -19,18 +20,34 @@ const PatientRecord = () => {
   const { findings } = record;
 
   const renderFields = (fields, level = 0) => {
-    if (typeof fields === "string" && fields.trim() !== "") {
-      return <div style={{ marginLeft: `${level * 20}px` }}>{fields}</div>;
+    if (typeof fields === "string") {
+      if (fields.startsWith("data:image/")) {
+        return (
+          <Card style={{ width: "18rem" }} key={uuid()}>
+            <Card.Img variant="top" src={fields} />
+          </Card>
+        );
+      } else if (fields.trim() !== "") {
+        return <div style={{ marginLeft: `${level * 20}px` }}>{fields}</div>;
+      }
     }
 
     return Object.keys(fields).map((field) => {
       let value = fields[field];
       if (typeof value === "string" && value.trim() !== "") {
-        return (
-          <div key={field} style={{ marginLeft: `${level * 20}px` }}>
-            <b>{field.replace(/_/g, " ")}:</b> {value.replace(/_/g, " ")}
-          </div>
-        );
+        if (value.startsWith("data:image/")) {
+          return (
+            <Card style={{ width: "18rem" }} key={uuid()}>
+              <Card.Img variant="top" src={value} />
+            </Card>
+          );
+        } else {
+          return (
+            <div key={field} style={{ marginLeft: `${level * 20}px` }}>
+              <b>{field.replace(/_/g, " ")}:</b> {value.replace(/_/g, " ")}
+            </div>
+          );
+        }
       } else if (typeof value === "number") {
         return (
           <div key={field} style={{ marginLeft: `${level * 20}px` }}>
