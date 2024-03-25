@@ -22,7 +22,6 @@ class PatientViewSet(viewsets.ModelViewSet):
         print(patient.photo)
         if patient.photo:
             if default_storage.exists(patient.photo.name):
-                print(patient.photo.name)
                 default_storage.delete(patient.photo.name)
                 if default_storage.exists(patient.photo.name):
                     return Response(

@@ -4,10 +4,11 @@ from patients.models import Patient
 from organization.models import Department
 from users.models import Profile
 # from jsonschema import validate, ValidationError
-from fastjsonschema import compile as compile_schema
 from pytils.translit import slugify
+from utils.validators import compile_with_custom_formats
 
 logger = logging.getLogger(__name__)
+
 
 class ValidationError(Exception):
     pass
@@ -47,7 +48,9 @@ class AbstractRecord(models.Model):
         super().clean()
         if self.findings_schema:
             try:
-                validate = compile_schema(self.findings_schema.schema)
+                validate = compile_with_custom_formats(
+                    self.findings_schema.schema
+                    )
                 validate(self.findings)
             except Exception as e:
                 logger.error(f"Validation error: {e}")
