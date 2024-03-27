@@ -13,7 +13,7 @@
   height: 92vh;
 }
 .card-content {
-  overflow-y: auto;
+  overflow: auto;
 }
 .patient-profile.selected {
   background-color: #7491ad; /* Цвет фона для выбранного пациента */

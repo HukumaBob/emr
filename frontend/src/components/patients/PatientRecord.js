@@ -1,6 +1,6 @@
 import Card from "react-bootstrap/Card";
-import Badge from "react-bootstrap/Badge";
 import ListGroup from "react-bootstrap/ListGroup";
+import Badge from "react-bootstrap/Badge";
 import { useSelector } from "react-redux";
 import { v4 as uuid } from "uuid";
 import "./Patients.css";
@@ -8,32 +8,35 @@ import "./Patients.css";
 const PatientRecord = () => {
   const record = useSelector((state) => state.recordForm.record);
 
-  const ImageCardTemplate = ({
+  const CardTemplate = ({
     title = null,
     src = null,
     children = null,
     className = null,
+    classNameBody = null,
   }) => (
     <Card className={className} key={uuid()}>
       {{ title } ? <Card.Header>{title}</Card.Header> : null}
       {{ src } ? <Card.Img variant="top" src={src}></Card.Img> : null}
-      {{ children } ? <Card.Body>{children}</Card.Body> : null}
+      {{ children } ? (
+        <Card.Body className={classNameBody}>{children}</Card.Body>
+      ) : null}
     </Card>
   );
 
   const ListGroupTemplate = ({ level = 0, title = null, value = null }) => (
     <ListGroup.Item
-      key={title}
+      key={uuid()}
       variant="flush"
-      style={{ marginLeft: `${level * 20}px` }}
+      style={{ marginLeft: `${level * 20}px`, flex: "1 1 auto" }}
     >
-      <b>{title.replace(/_/g, " ")}:</b>
-      {{ value } ? value : null}
+      <b>{title.replace(/_/g, " ")}: </b>
+      <>{{ value } ? value : null}</>
     </ListGroup.Item>
   );
 
   if (!record) {
-    return ImageCardTemplate({
+    return CardTemplate({
       title: "Запись не выбрана",
       className: "card-height",
     });
@@ -44,7 +47,7 @@ const PatientRecord = () => {
   const renderFields = (fields, level = 0) => {
     if (typeof fields === "string") {
       if (fields.startsWith("data:image/")) {
-        return ImageCardTemplate({
+        return CardTemplate({
           src: fields,
           className: "image-card",
         });
@@ -60,7 +63,7 @@ const PatientRecord = () => {
       let value = fields[field];
       if (typeof value === "string" && value.trim() !== "") {
         if (value.startsWith("data:image/")) {
-          return ImageCardTemplate({
+          return CardTemplate({
             title: "",
             src: value,
             className: "image-card",
@@ -99,24 +102,28 @@ const PatientRecord = () => {
     return sections.map((section) => {
       const fields = findings[section];
       return (
-        <Card key={section} className="m-1">
+        <Card key={section} className="card-content my-1">
           <Card.Header>{section.replace(/_/g, " ")}</Card.Header>
           <Card.Body>
-            <ListGroup>{renderFields(fields)}</ListGroup>
+            <ListGroup
+              key={uuid()}
+              horizontal="lg"
+              className="d-flex flex-wrap justify-content-center"
+            >
+              {renderFields(fields)}
+            </ListGroup>
           </Card.Body>
         </Card>
       );
     });
   };
 
-  return (
-    <Card className="card-height">
-      <Card.Header>
-        <Card.Title>{record.findings_schema_name}</Card.Title>
-      </Card.Header>
-      <Card.Body className="card-content">{renderFindings(findings)}</Card.Body>
-    </Card>
-  );
+  return CardTemplate({
+    title: record.findings_schema_name,
+    className: "card-height",
+    classNameBody: "card-content",
+    children: renderFindings(findings),
+  });
 };
 
 export default PatientRecord;
