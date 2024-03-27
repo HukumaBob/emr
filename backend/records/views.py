@@ -25,7 +25,7 @@ from patients.pagination import StandardResultsSetPagination
 from .filters import RecordFilter
 
 
-DATA_FORMAT = 'data:image/jpeg;'
+DATA_FORMAT = 'data:image'
 PREFIX = 'record-file'
 FILE_DIRECTORY = 'files'
 

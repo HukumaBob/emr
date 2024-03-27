@@ -15,8 +15,7 @@ def file_to_base64(file_path):
 
 
 def base64_to_file(file_data, prefix):
-    format, imgstr = file_data.split(';base64,') 
-    print('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@',format, imgstr)
+    format, imgstr = file_data.split(';base64,')
     ext = format.split('/')[-1].split(';')[0]
     data = ContentFile(
         base64.b64decode(imgstr), name=f'{prefix}-{uuid.uuid4()}.{ext}'
@@ -49,7 +48,7 @@ def find_and_replace_files_in_json(data, format, prefix, path=None):
                                 destination.write(chunk)
                         data[key][i] = file.name                          
             elif isinstance(value, dict):
-                find_and_replace_files_in_json(value, format)
+                find_and_replace_files_in_json(value, format, prefix, path=None)
     elif isinstance(data, list):
         for i, item in enumerate(data):
             if isinstance(item, str) and item.startswith(format):

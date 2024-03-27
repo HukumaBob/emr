@@ -8,6 +8,7 @@ import Button from "react-bootstrap/Button";
 import Nav from "react-bootstrap/Nav";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
+import { RiEdit2Line } from "react-icons/ri";
 import { RiFullscreenExitFill, RiFullscreenFill } from "react-icons/ri";
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
@@ -206,6 +207,18 @@ const PatientProfile = () => {
                       </td>
                       <td colSpan="1">
                         {new Date(record.created_at).toLocaleDateString()}
+                      </td>
+                      <td
+                      // className={`patient-profile ${
+                      //   patient.id === selectedPatientId ? "selected" : ""
+                      // }`}
+                      // onClick={() => {
+                      //   dispatch(loadPatient(patient.id));
+                      //   dispatch(openForm());
+                      //   setSelectedPatientId(patient.id);
+                      // }}
+                      >
+                        <RiEdit2Line />
                       </td>
                     </tr>
                   ))}
