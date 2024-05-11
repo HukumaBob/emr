@@ -1,6 +1,6 @@
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
-import authReducer from "../slices/authSlice";
-import patientsReducer from "../slices/patientsSlice";
+import authReducer from "../slices/AuthSlice";
+import patientsReducer from "../slices/PatientsSlice";
 import recordsReducer from "../slices/recordsSlice";
 import patientFormReducer from "../slices/patientFormSlice";
 import recordFormReducer from "../slices/recordFormSlice";

@@ -10,7 +10,7 @@ import { createPatient } from "../../slices/patientForm/createPatient";
 import { deletePatient } from "../../slices/patientForm/deletePatient";
 import { deletePhotoPatient } from "../../slices/patientForm/deletePhotoPatient";
 import { updatePatient } from "../../slices/patientForm/updatePatient";
-import { fetchPatients } from "../../slices/patientsSlice";
+import { fetchPatients } from "../../slices/PatientsSlice";
 import "./PatientForm.css";
 import {
   initialPatientState,

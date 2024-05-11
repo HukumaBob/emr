@@ -8,7 +8,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import ListGroup from "react-bootstrap/ListGroup";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchPatients, setCurrentPage } from "../../slices/patientsSlice.js";
+import { fetchPatients, setCurrentPage } from "../../slices/PatientsSlice.js";
 import { openForm, closeForm } from "../../slices/patientFormSlice.js";
 import { loadPatient } from "../../slices/patientForm/loadPatient.js";
 import PatientForm from "./PatientForm.js";

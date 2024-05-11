@@ -59,7 +59,7 @@ npm install
 4. Run Migrations:
 
 ```bash
-cd emr_system
+cd backend
 python manage.py migrate
 ```
 
