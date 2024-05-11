@@ -135,5 +135,6 @@ ENV/
 .mypy_cache/
 
 # Only for me
+############
 */migrations/*
 
